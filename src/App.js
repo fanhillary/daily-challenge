@@ -23,6 +23,13 @@ class App extends Component {
     this.generateChallenge = this.generateChallenge.bind(this);
   
   }
+
+  
+  componentDidMount() {
+    this.generateChallenge();
+  }
+
+
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters
@@ -44,7 +51,6 @@ getRandomArbitrary(min, max) {
 * Return: None.
 */
   generateChallenge() {
-    var challenge = ""; // the start of a new challenge
     var randomAction = "";
     var randomConjunction = "";
     var randomEnd = "";
@@ -65,11 +71,12 @@ getRandomArbitrary(min, max) {
         randomEnd = listTarget[Math.floor(Math.random()*listTarget.length)];
       }
       // concatenate the entire sentence
-      challenge = randomAction + " " + randomConjunction + " " + randomEnd + ".";
+      this.setState({currentChallenge: randomAction + " " + randomConjunction + " " + randomEnd + "."});
 
     // select from predeterminedList
     } else if (selectedArray == 1) {
-      challenge = predeterminedList[Math.floor(Math.random()*predeterminedList.length)] + ".";
+      // form challenge sentence
+      this.setState({currentChallenge: predeterminedList[Math.floor(Math.random()*predeterminedList.length)] + "."});
 
     // select from no conjunction actions
     } else {
