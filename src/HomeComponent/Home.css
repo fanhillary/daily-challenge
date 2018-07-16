@@ -1,0 +1,23 @@
+#completionForm {
+  position: relative;
+  margin: 200px;
+}
+
+.completionButton {
+  background-color: #fff;
+  display: block;
+  width: 500px;
+  height: 100px;
+  border: 0px;
+  margin: 10;
+}
+
+.form {
+  max-width: 800px;
+  margin: 50px auto;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 36px;
+}
+
+/*# sourceMappingURL=Home.css.map */

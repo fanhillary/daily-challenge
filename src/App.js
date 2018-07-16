@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 import './App.css';
-import Home from "./Home";
+import Home from "./HomeComponent/Home";
 import Analytics from "./Analytics"
 import Settings from "./Settings"
 
@@ -15,8 +15,7 @@ class App extends Component {
               <li><NavLink to="/analytics">Analytics</NavLink></li>
               <li><NavLink to="/settings">Settings</NavLink></li>
           </ul>
-          <button> Sign Up </button>
-
+          <button type="button" className="btn btn-dark">Register</button>
           <div className="content">
               <Route exact path="/" component={Home}/>
               <Route path="/analytics" component={Analytics}/>
