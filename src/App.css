@@ -55,6 +55,12 @@ ul.header li a {
   display: inline-block;
 }
 
+ul.header button {
+  position: absolute;
+  left: 90%;
+  top: 33px;
+}
+
 .content {
    padding: 20px;
 }
