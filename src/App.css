@@ -57,7 +57,8 @@ ul.header li a {
 
 ul.header button {
   position: absolute;
-  left: 90%;
+  left: 85%;
+  right: 10%;
   top: 33px;
 }
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 #completionForm {
     position: relative;
     margin: 200px;
@@ -21,3 +23,16 @@
   line-height: 36px;
 }
 
+.completeBtn {
+  height: 50px;
+  width: 250px;
+  padding: 10px 15px;
+  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+
+}
+
+.completionBtnGroup {
+  margin-left: -10%;
+}

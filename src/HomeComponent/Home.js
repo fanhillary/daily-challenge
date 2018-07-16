@@ -137,12 +137,12 @@ undoCompletion() {
 
         <form className="form">
           <div id="completionForm">
-            <div className="btn-group btn-group-toggle" data-toggle="buttons">
-              <label htmlFor="completeOption1" className="btn btn-secondary active" onClick={this.undoCompletion}>
+            <div className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
+              <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active" onClick={this.undoCompletion}>
                 <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete 
               </label>
 
-              <label htmlFor="completeOption2" className="btn btn-secondary" onClick={this.completeChallenge}>
+              <label htmlFor="completeOption2" className="completeBtn btn btn-secondary" onClick={this.completeChallenge}>
                 <input name="completeOption2" type="radio" id="complete" autoComplete="off" /> Complete
               </label>
             </div>
