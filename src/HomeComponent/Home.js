@@ -2,13 +2,21 @@
 import React, { Component } from 'react';
 import './Home.css';
 
-var listActions = ["Drink a beer or two", "Sit silently", "Don't eat", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom"];
-var listTarget = ["your significant other", "your pet", "your sibling", "your mother", "your father", "your friend", "someone you haven't contacted in a long time", "a distant friend", "a random stranger", "the person to your left", "the person to your right", "the person across from you", "an elder", "someone younger than you"];
+var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
+var listAction = ["Drink a beer or two", "Sit silently", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom"];
+var listActionPre = ["Don't produce any waste today.", "Do one good deed.", "Do two good deeds.", "Do three good deeds.","Go to work 15 minutes early.", "Go to work 15 minutes late.", "Pet a random dog."];
+var listFood = ["Don't eat any", "Only eat"];
+var listFoodPre = ["Try a new fruit.", "Try a new drink.", "Try a new cuisine."];
+var listFinance = ["Spend a maximum of", "Spend a minimum of"];
+var financeTarget = ["50 cents", "$1", "$5", "$10", "$50", "$100"];
+var listCommunication = ["Talk to", "Spend an hour with", "Spend 30 minutes with", "Spend a day with", "Visit"]
+var listExercise = ["Run", "Walk", "Jog"];
+var listExerciseNoConj = ["Do 10", "Do 50", "Do 100"];
+var exerciseTarget = ["push-ups", "sit-ups", "squats"];
+var targets = ["your significant other", "your pet", "your sibling", "your mother", "your father", "your friend", "someone you haven't contacted in a long time", "a distant friend", "a random stranger", "the person to your left", "the person to your right", "the person across from you", "an elder", "someone younger than you"];
 var listConjunction = ["for", "with"];
-var listTime = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
-var listFoods = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
-var predeterminedList = ["Do one good deed", "Do two good deeds", "Do three good deeds", "Try a new fruit", "Try a new drink", "Try a new cuisine", "Go to work 15 minutes early", "Go to work 15 minutes late", "Pet a random dog"];
-var noConjunctionActions = ["Don't eat any", "Only eat", "Talk to", "Spend an hour with", "Spend 30 minutes with", "Spend a day with", "Visit"];
+var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
+var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 
 
 class Home extends Component {
@@ -43,7 +51,7 @@ class Home extends Component {
 * Return: Randomly selected whole number between range given.
 */
 getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
+  return Math.round(Math.random() * (max - min) + min);
 }
 
 
@@ -55,49 +63,77 @@ getRandomArbitrary(min, max) {
 * Return: None.
 */
   generateChallenge() {
-    var randomAction = "";
+    var randomVerb = "";
     var randomConjunction = "";
     var randomEnd = "";
 
     // choose a random action array to select from
-    var selectedArray = this.getRandomArbitrary(0,2);
+    var selectedCategory = this.getRandomArbitrary(0,4);
+     // Action Category
+     if (selectedCategory === 0) { 
+      var actionType = this.getRandomArbitrary(0,1);
 
-    // select from listActions
-    if (selectedArray === 0) {
-      // obtain a random action to start with
-      randomAction = listActions[Math.floor(Math.random()*listActions.length)];
-      // obtain a random conjunction
-      randomConjunction = listConjunction[Math.floor(Math.random()*listConjunction.length)];
-      // get random appropriate ending based on conjunction chosen
-      if (randomConjunction === "for") {
-        randomEnd = listTime[Math.floor(Math.random()*listTime.length)];
-      } else if (randomConjunction === "with") {
-        randomEnd = listTarget[Math.floor(Math.random()*listTarget.length)];
-      }
-      // concatenate the entire sentence
-      this.setState({currentChallenge: randomAction + " " + randomConjunction + " " + randomEnd + "."});
-
-    // select from predeterminedList
-    } else if (selectedArray === 1) {
-      // form challenge sentence
-      this.setState({currentChallenge: predeterminedList[Math.floor(Math.random()*predeterminedList.length)] + "."});
-
-    // select from no conjunction actions
-    } else {
-      randomAction = noConjunctionActions[Math.floor(Math.random()*noConjunctionActions.length)];
-
-      // select end of sentence based on selection of action
-      if (randomAction === "Don't eat any" || randomAction === "Only eat") {
-        randomEnd = listFoods[Math.floor(Math.random()*listFoods.length)];
+      if (actionType === 0) {
+        // obtain a random action to start with
+        randomVerb = listAction[Math.floor(Math.random()*listAction.length)];
+        // obtain a random conjunction
+        randomConjunction = listConjunction[Math.floor(Math.random()*listConjunction.length)];
+        // get random appropriate ending based on conjunction chosen
+        if (randomConjunction === "for") {
+          randomEnd = duration[Math.floor(Math.random()*duration.length)];
+        } else if (randomConjunction === "with") {
+          randomEnd = targets[Math.floor(Math.random()*targets.length)];
+        }
+        // concatenate the entire sentence
+        this.setState({currentChallenge: randomVerb + " " + randomConjunction + " " + randomEnd + "."});
       } else {
-        randomEnd = listTarget[Math.floor(Math.random()*listTarget.length)];
+        this.setState({currentChallenge: listActionPre[Math.floor(Math.random()*listActionPre.length)]});
       }
 
-      // form challenge sentence
-      this.setState({currentChallenge: randomAction+ " " + randomEnd + "."});
+      // Food Category
+    } else if (selectedCategory === 1) { 
+      var foodType = this.getRandomArbitrary(0,1);
 
+      if (foodType === 0) {
+        randomVerb= listFood[Math.floor(Math.random()*listFood.length)];
+        randomEnd = foodTarget[Math.floor(Math.random()*foodTarget.length)];
+        this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+      } else {
+        this.setState({currentChallenge: listFoodPre[Math.floor(Math.random()*listFoodPre.length)]});
+      }
+
+      // Finance Category
+    } else if (selectedCategory === 2) {
+      randomVerb= listFinance[Math.floor(Math.random()*listFinance.length)];
+      randomEnd = financeTarget[Math.floor(Math.random()*financeTarget.length)];
+      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+
+      // Communication Category
+    } else if (selectedCategory === 3) {
+      randomVerb= listCommunication[Math.floor(Math.random()*listCommunication.length)];
+      randomEnd = targets[Math.floor(Math.random()*targets.length)];
+      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+
+      // Exercise Category
+    } else {
+      var exerciseType = this.getRandomArbitrary(0,1);
+      if (exerciseType === 0) {
+        randomVerb= listExercise[Math.floor(Math.random()*listExercise.length)];
+        randomConjunction = listConjunction[Math.floor(Math.random()*listConjunction.length)];
+        // get random appropriate ending based on conjunction chosen
+        if (randomConjunction === "for") {
+          randomEnd = duration[Math.floor(Math.random()*duration.length)];
+        } else if (randomConjunction === "with") {
+          randomEnd = targets[Math.floor(Math.random()*targets.length)];
+        }
+        this.setState({currentChallenge: randomVerb + " " + randomConjunction + " " + randomEnd + "."});
+
+      } else {
+        randomVerb= listExerciseNoConj[Math.floor(Math.random()*listExerciseNoConj.length)];
+        randomEnd = exerciseTarget[Math.floor(Math.random()*exerciseTarget.length)];
+        this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+      }
     }
-
   }
   
 /*
