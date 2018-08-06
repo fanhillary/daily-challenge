@@ -202,22 +202,22 @@ undoCompletion() {
     users: [0],
   };
 
-  // // xmlhttprequest()
-  // fetch('http://localhost:3000/remove-command', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json'
-  //   },
-  //   body: JSON.stringify(data)
-  // }).then(function(response) {  // returns a promise
-  //     console.log(response);
-  //     response.json().then(function(data) {
-  //       console.log(data)
-  //     });
-  //   }).catch(function(err) {
-  //     console.log(err)
-  //   });
+  // xmlhttprequest()
+  fetch('http://localhost:3000/remove-command', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }).then(function(response) {  // returns a promise
+      console.log(response);
+      response.json().then(function(data) {
+        console.log(data)
+      });
+    }).catch(function(err) {
+      console.log(err)
+    });
 }
   render() {
     return (

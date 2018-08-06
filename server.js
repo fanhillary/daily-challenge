@@ -81,9 +81,34 @@ app.post('/new-command', function(request, response) {
                 if (err) {
                     return response.status(400).send(err);
                 } else {
-                    console.log('DATA INSERTED');
                     // db.end(); // close connection
                     response.status(201).send({message: "Data inserted!"});
+                }
+            })
+        }
+    })
+
+});
+
+app.post('/remove-command', function(request, response) {
+    var commands = request.body.commands;
+    var type = request.body.type;
+    var users = request.body.id;
+    let values = [commands, type, users];
+
+    // connect to the postgres database
+    pool.connect(( err, db, done) => {
+        if (err) {
+            return response.status(400).send(err);
+        } else {
+            // TODO still needs to only update if already exists
+            db.query('DELETE FROM completed WHERE commands = $1', [... values ], (err, table) => {
+                done();
+                if (err) {
+                    return response.status(400).send(err);
+                } else {
+                    // db.end(); // close connection
+                    response.status(201).send({message: "Data removed!"});
                 }
             })
         }
