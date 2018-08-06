@@ -23,7 +23,9 @@ class Home extends Component {
   constructor() {
     super();
     this.state = {
-      currentChallenge: ""
+      currentChallenge: "",
+      category: "",
+      completedChallenges: []
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -89,6 +91,8 @@ getRandomArbitrary(min, max) {
       } else {
         this.setState({currentChallenge: listActionPre[Math.floor(Math.random()*listActionPre.length)]});
       }
+      this.setState({category: "Action"});
+
 
       // Food Category
     } else if (selectedCategory === 1) { 
@@ -102,17 +106,22 @@ getRandomArbitrary(min, max) {
         this.setState({currentChallenge: listFoodPre[Math.floor(Math.random()*listFoodPre.length)]});
       }
 
+      this.setState({category: "Food"});
+
+
       // Finance Category
     } else if (selectedCategory === 2) {
       randomVerb= listFinance[Math.floor(Math.random()*listFinance.length)];
       randomEnd = financeTarget[Math.floor(Math.random()*financeTarget.length)];
       this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+      this.setState({category: "Finance"});
 
       // Communication Category
     } else if (selectedCategory === 3) {
       randomVerb= listCommunication[Math.floor(Math.random()*listCommunication.length)];
       randomEnd = targets[Math.floor(Math.random()*targets.length)];
       this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+      this.setState({category: "Communication"});
 
       // Exercise Category
     } else {
@@ -120,6 +129,7 @@ getRandomArbitrary(min, max) {
       if (exerciseType === 0) {
         randomVerb= listExercise[Math.floor(Math.random()*listExercise.length)];
         randomConjunction = listConjunction[Math.floor(Math.random()*listConjunction.length)];
+        
         // get random appropriate ending based on conjunction chosen
         if (randomConjunction === "for") {
           randomEnd = duration[Math.floor(Math.random()*duration.length)];
@@ -133,6 +143,8 @@ getRandomArbitrary(min, max) {
         randomEnd = exerciseTarget[Math.floor(Math.random()*exerciseTarget.length)];
         this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
       }
+      this.setState({category: "Exercise"});
+
     }
   }
   
@@ -147,6 +159,31 @@ getRandomArbitrary(min, max) {
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
+    // add command to database
+    let data = {
+      commands: this.state.currentChallenge,
+      type: this.state.category,
+      users: 0,
+    };
+
+    // xmlhttprequest()
+    fetch('http://localhost:3000/#/api/new-command', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      .then(function(response) {  // returns a promise
+        response.json() // so first convert to json
+          .then(function(data) {
+            console.log(data)
+          })
+      })
+      .catch(function(err) {
+        console.log(err)
+      });
   }
 
   /*
@@ -168,6 +205,7 @@ undoCompletion() {
         <div>
             <h3> Your Challenge For Today</h3>
             <h1> {this.state.currentChallenge} </h1>
+            <p> Category: {this.state.category} </p>
             <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
         </div>
 
