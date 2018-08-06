@@ -27,16 +27,17 @@ app.use(function(request, response, next) {
     next();
   });
 
+app.use(express.static('public'));
+
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'index.html'), function(err) {
+    res.sendFile(path.join(__dirname, '/public/index.html'), function(err) {
     if (err) {
         res.status(500).send(err)
       }
     })
 })
-// app.use('/', express.static('src'));
   
-app.post('#/api/new-command', function(request, response) {
+app.post('api/new-command', function(request, response) {
     console.log(request.body);
     var commands = request.body.commands;
     var type = request.body.type;

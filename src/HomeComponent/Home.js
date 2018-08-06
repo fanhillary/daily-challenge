@@ -167,19 +167,18 @@ getRandomArbitrary(min, max) {
     };
 
     // xmlhttprequest()
-    fetch('http://localhost:3000/#/api/new-command', {
+    fetch('http://localhost:3000/api/new-command', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(data)
-    })
-      .then(function(response) {  // returns a promise
-        response.json() // so first convert to json
-          .then(function(data) {
-            console.log(data)
-          })
+    }).then(function(response) {  // returns a promise
+        console.log(response);
+        response.json().then(function(data) {
+          console.log(data)
+        });
       })
       .catch(function(err) {
         console.log(err)
