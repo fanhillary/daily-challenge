@@ -29,6 +29,7 @@ app.use(function(request, response, next) {
 
 app.use(express.static('public'));
 
+// for root of localhost
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, '/public/index.html'), function(err) {
     if (err) {
@@ -37,8 +38,7 @@ app.get('/', function(req, res) {
     })
 })
   
-app.post('api/new-command', function(request, response) {
-    console.log(request.body);
+app.post('/new-command', function(request, response) {
     var commands = request.body.commands;
     var type = request.body.type;
     var users = request.body.id;
@@ -55,7 +55,7 @@ app.post('api/new-command', function(request, response) {
                     return response.status(400).send(err);
                 } else {
                     console.log('DATA INSERTED');
-                    db.end(); // close connection
+                    // db.end(); // close connection
                     response.status(201).send({message: "Data inserted!"});
                 }
             })
@@ -64,4 +64,30 @@ app.post('api/new-command', function(request, response) {
 
 });
 
+app.post('/new-command', function(request, response) {
+    var commands = request.body.commands;
+    var type = request.body.type;
+    var users = request.body.id;
+    let values = [commands, type, users];
+
+    // connect to the postgres database
+    pool.connect(( err, db, done) => {
+        if (err) {
+            return response.status(400).send(err);
+        } else {
+            // TODO still needs to only update if already exists
+            db.query('INSERT INTO completed (commands, type, users) VALUES($1, $2, $3) ON CONFLICT(commands) DO UPDATE SET users = $3', [... values ], (err, table) => {
+                done();
+                if (err) {
+                    return response.status(400).send(err);
+                } else {
+                    console.log('DATA INSERTED');
+                    // db.end(); // close connection
+                    response.status(201).send({message: "Data inserted!"});
+                }
+            })
+        }
+    })
+
+});
 app.listen(PORT, () => console.log('Listening on port ' + PORT));

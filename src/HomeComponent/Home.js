@@ -163,11 +163,11 @@ getRandomArbitrary(min, max) {
     let data = {
       commands: this.state.currentChallenge,
       type: this.state.category,
-      users: 0,
+      users: [0],
     };
 
     // xmlhttprequest()
-    fetch('http://localhost:3000/api/new-command', {
+    fetch('http://localhost:3000/new-command', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -179,8 +179,7 @@ getRandomArbitrary(min, max) {
         response.json().then(function(data) {
           console.log(data)
         });
-      })
-      .catch(function(err) {
+      }).catch(function(err) {
         console.log(err)
       });
   }
@@ -196,7 +195,29 @@ undoCompletion() {
   document.body.style.setProperty('background-color', '#FFCC00');
   document.body.style.transition = "all 1s ease-out";
 
-  ;
+  // remove command from database
+  let data = {
+    commands: this.state.currentChallenge,
+    type: this.state.category,
+    users: [0],
+  };
+
+  // // xmlhttprequest()
+  // fetch('http://localhost:3000/remove-command', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json'
+  //   },
+  //   body: JSON.stringify(data)
+  // }).then(function(response) {  // returns a promise
+  //     console.log(response);
+  //     response.json().then(function(data) {
+  //       console.log(data)
+  //     });
+  //   }).catch(function(err) {
+  //     console.log(err)
+  //   });
 }
   render() {
     return (
