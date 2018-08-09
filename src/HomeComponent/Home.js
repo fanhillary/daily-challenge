@@ -167,7 +167,7 @@ getRandomArbitrary(min, max) {
     };
 
     // xmlhttprequest()
-    fetch('http://localhost:3000/new-command', {
+    etch('http://localhost:3000/new-command', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

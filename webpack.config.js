@@ -3,8 +3,8 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
-  output: { path: __dirname + '/src', filename: 'react-app.js' },
+  entry: './src/build/index.js',
+  output: { path: __dirname + '/src/build/', filename: 'bundle.js' },
   module: {
     rules: [
     {

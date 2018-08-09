@@ -2,6 +2,7 @@
   "name": "daily-challenge",
   "version": "0.1.0",
   "private": true,
+  "main": "server.js",
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.56",
     "body-parser": "^1.18.3",
@@ -25,6 +26,7 @@
     "@babel/cli": "^7.0.0-beta.56",
     "@babel/core": "^7.0.0-beta.56",
     "@babel/preset-env": "^7.0.0-beta.56",
+    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
     "css-loader": "^1.0.0",
     "style-loader": "^0.21.0",
     "webpack-dev-server": "^3.1.5",

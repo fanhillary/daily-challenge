@@ -13,7 +13,7 @@ let pool = new pg.Pool({
 }); // give access to pooling resource
 
 let app = express();
-
+app.use(express.static(path.join(__dirname, 'src/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -27,16 +27,15 @@ app.use(function(request, response, next) {
     next();
   });
 
-app.use(express.static('public'));
 
-// for root of localhost
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, '/public/index.html'), function(err) {
-    if (err) {
-        res.status(500).send(err)
-      }
-    })
-})
+// // for root of localhost
+// app.get('/', function(req, res) {
+//     res.sendFile(path.join(__dirname, '/public/index.html'), function(err) {
+//     if (err) {
+//         res.status(500).send(err)
+//       }
+//     })
+// })
   
 app.post('/new-command', function(request, response) {
     var commands = request.body.commands;
