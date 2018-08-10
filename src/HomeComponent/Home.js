@@ -163,11 +163,11 @@ getRandomArbitrary(min, max) {
     let data = {
       commands: this.state.currentChallenge,
       type: this.state.category,
-      users: [0],
+      users: 0,
     };
 
     // xmlhttprequest()
-    etch('http://localhost:3000/new-command', {
+    fetch('http://localhost:3000/new-command', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ undoCompletion() {
   let data = {
     commands: this.state.currentChallenge,
     type: this.state.category,
-    users: [0],
+    users: 0,
   };
 
   // xmlhttprequest()
