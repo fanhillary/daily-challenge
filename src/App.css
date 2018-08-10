@@ -57,11 +57,32 @@ ul.header li a {
 
 ul.header button {
   position: absolute;
-  left: 85%;
-  right: 10%;
-  top: 33px;
+  right: 5%;
+  margin: 10px;
 }
 
 .content {
    padding: 20px;
+}
+
+.register-input {
+  width: 75%;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.card {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.card-contents{
+  margin-top: 10%;
+}
+
+.forgot-link {
+  display: block;
+  margin: 10px;
 }

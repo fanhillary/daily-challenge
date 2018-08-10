@@ -24,7 +24,7 @@ class App extends Component {
               <li><NavLink to="/">Home</NavLink></li>
               <li><NavLink to="/analytics">Analytics</NavLink></li>
               <li><NavLink to="/settings">Settings</NavLink></li>
-              <button type="button" className="btn btn-dark"><NavLink to ="/register">Register</NavLink></button>
+              <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button>
           </ul>
           <div className="content">
               <Route exact path="/" component={Home}/>
