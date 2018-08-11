@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 import './App.css';
 import Home from "./HomeComponent/Home";
-import Analytics from "./Analytics";
+import Analytics from "./AnalyticsComponent/Analytics";
 import Settings from "./Settings";
-import Registration from "./Registration";
+import Registration from "./RegistrationComponent/Registration";
 
 class App extends Component {
   constructor() {

@@ -1,0 +1,21 @@
+  .analytics-card {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: white;
+    position: relative;
+    min-width: 0;
+    word-wrap: break-word;
+  }
+  
+  .col-md-4 {
+    padding: 0;
+  }
+  .card-contents{
+    margin-top: 10%;
+  }
+
+  #total-card {
+      width: 100%;
+  }
