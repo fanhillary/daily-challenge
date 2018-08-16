@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './Registration.css';
 // const {Provider, Consumer} = AuthenticationContext;
 import firebase, {auth} from '../firebase.js';
+import { withRouter } from 'react-router'
+
 
 class Registration extends Component {
   constructor(props) {
@@ -18,16 +20,25 @@ class Registration extends Component {
     this.createNewUser = this.createNewUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
   }
+
+  componentDidMount() {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("logged in");
+        this.props.history.push(`/`)
+      } else {
+        console.log("not logged in");
+      }
+    });
+  }
+
   createNewUser() {
     var data = {
         email: this.state.email,
         password: this.state.password
     }
     firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
-    .then((result) => {
-        const user = result.user;
-        this.setState({ user: user });  
-    }).catch(function(error) {
+    .catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (error.message) {
@@ -40,7 +51,7 @@ class Registration extends Component {
     firebase.auth().signInWithEmailAndPassword(data.email, data.password)
     .then((result) => {
         const user = result.user;
-        this.setState({ user: user });  
+        this.setState({ user: user });
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -57,10 +68,12 @@ class Registration extends Component {
         email: this.state.login_email,
         password: this.state.login_password
     }
+    console.log("logging in");
     firebase.auth().signInWithEmailAndPassword(data.email, data.password)
     .then((result) => {
         const user = result.user;
-        this.setState({ user: user });  
+        this.setState({ user: user });
+        this.props.history.push(`/`);
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -113,4 +126,4 @@ class Registration extends Component {
     }
 }
 
-export default Registration;
+export default withRouter(Registration);
