@@ -27,6 +27,7 @@ class Registration extends Component {
         console.log("logged in");
         this.props.history.push(`/`)
       } else {
+        this.setState({ user: null });
         console.log("not logged in");
       }
     });

@@ -45,8 +45,10 @@ class Home extends Component {
     this.generateChallenge();
     auth.onAuthStateChanged((user) => {
       if (user) {
+        console.log("logged in");
         this.setState({ user: user });
       } else {
+        this.setState({ user: null });
         console.log("not logged in");
       }
     });
@@ -232,7 +234,7 @@ undoCompletion() {
       <div>
         <div>
             {/* { this.state.loggedIn ? <h2> Hi, {this.props.first_name}</h2> : null } */}
-            { loggedIn ? <h2> Hello! </h2> : null }
+            { this.state.user? <h2> Hello! </h2> : null }
             <h3> Your Challenge For Today</h3>
             <h1> {this.state.currentChallenge} </h1>
             <p> Category: {this.state.category} </p>

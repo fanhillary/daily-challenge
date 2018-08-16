@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, NavLink, HashRouter, BrowserRouter } from "react-router-dom";
+import { Route, NavLink, HashRouter} from "react-router-dom";
 import './App.css';
 import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
@@ -14,6 +14,18 @@ class App extends Component {
       user: null,
     }
     this.logOut = this.logOut.bind(this);
+  }
+
+  componentDidMount() {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("logged in");
+        this.setState({ user: user });
+      } else {
+        this.setState({ user: null });
+        console.log("not logged in");
+      }
+    });
   }
  
   logOut() {

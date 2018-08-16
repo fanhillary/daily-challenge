@@ -24965,6 +24965,21 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     }
 
     _createClass(App, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var _this2 = this;
+
+        _firebase.auth.onAuthStateChanged(function (user) {
+          if (user) {
+            console.log("logged in");
+            _this2.setState({ user: user });
+          } else {
+            _this2.setState({ user: null });
+            console.log("not logged in");
+          }
+        });
+      }
+    }, {
       key: 'logOut',
       value: function logOut() {
         _firebase.auth.signOut().then(function () {
@@ -27693,8 +27708,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         this.generateChallenge();
         _firebase.auth.onAuthStateChanged(function (user) {
           if (user) {
+            console.log("logged in");
             _this2.setState({ user: user });
           } else {
+            _this2.setState({ user: null });
             console.log("not logged in");
           }
         });
@@ -27858,7 +27875,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
           _react2.default.createElement(
             'div',
             null,
-            loggedIn ? _react2.default.createElement(
+            this.state.user ? _react2.default.createElement(
               'h2',
               null,
               ' Hello! '
@@ -71722,6 +71739,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         console.log("logged in");
                         _this2.props.history.push('/');
                     } else {
+                        _this2.setState({ user: null });
                         console.log("not logged in");
                     }
                 });
