@@ -7,29 +7,23 @@ import Settings from "./Settings";
 import Registration from "./RegistrationComponent/Registration";
 import firebase, { auth } from './firebase.js';
 
-var loggedIn = false;
-
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    loggedIn = true;
-  } else {
-    loggedIn = false;
-  }
-});
-
 class App extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      user: null,
+    }
     this.logOut = this.logOut.bind(this);
   }
  
   logOut() {
-    firebase.auth().signOut().then(function() {
-      loggedIn = false;
+    auth.signOut().then(function() {
+      this.setState({user: null});
     }).catch(function(error) {
       console.log(error)
     });
   }
+
   render() {
     return (
       <HashRouter>
@@ -38,9 +32,7 @@ class App extends Component {
               <li><NavLink to="/">Home</NavLink></li>
               <li><NavLink to="/analytics">Analytics</NavLink></li>
               <li><NavLink to="/settings">Settings</NavLink></li>
-              { loggedIn ? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
-
-              
+              { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
           <div className="content">
               <Route exact path="/" component={Home}/>

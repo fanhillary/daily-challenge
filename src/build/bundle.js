@@ -24993,16 +24993,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
-  var loggedIn = false;
-
-  _firebase2.default.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      loggedIn = true;
-    } else {
-      loggedIn = false;
-    }
-  });
-
   var App = function (_Component) {
     _inherits(App, _Component);
 
@@ -25011,6 +25001,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
       var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
+      _this.state = {
+        user: null
+      };
       _this.logOut = _this.logOut.bind(_this);
       return _this;
     }
@@ -25018,8 +25011,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     _createClass(App, [{
       key: 'logOut',
       value: function logOut() {
-        _firebase2.default.auth().signOut().then(function () {
-          loggedIn = false;
+        _firebase.auth.signOut().then(function () {
+          this.setState({ user: null });
         }).catch(function (error) {
           console.log(error);
         });
@@ -25063,7 +25056,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                   'Settings'
                 )
               ),
-              loggedIn ? _react2.default.createElement(
+              this.state.user ? _react2.default.createElement(
                 'button',
                 { type: 'button', className: 'btn btn-dark', onClick: this.logOut },
                 'Log Out'
@@ -27770,17 +27763,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
   var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
   var loggedIn = false;
 
-
-  _firebase2.default.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      loggedIn = true;
-      console.log(loggedIn);
-    } else {
-      loggedIn = false;
-      console.log(loggedIn);
-    }
-  });
-
   var Home = function (_Component) {
     _inherits(Home, _Component);
 
@@ -27793,9 +27775,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         currentChallenge: "",
         category: "",
         completedChallenges: [],
-        loggedIn: false,
-        user_id: null,
-        first_name: ""
+        user: null
       };
 
       _this.generateChallenge = _this.generateChallenge.bind(_this);
@@ -27815,7 +27795,16 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     _createClass(Home, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
+        var _this2 = this;
+
         this.generateChallenge();
+        _firebase.auth.onAuthStateChanged(function (user) {
+          if (user) {
+            _this2.setState({ user: user });
+          } else {
+            console.log("not logged in");
+          }
+        });
       }
     }, {
       key: 'getRandomArbitrary',
@@ -28651,15 +28640,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
     }
 
-    _firebase2.default.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            console.log("signed in as");
-            console.log(user.email);
-        } else {
-            // No user is signed in.
-        }
-    });
-
     var Registration = function (_Component) {
         _inherits(Registration, _Component);
 
@@ -28674,7 +28654,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 password: "",
                 login_email: "",
                 login_password: "",
-                warning: ""
+                warning: "",
+                user: null
             };
             _this.createNewUser = _this.createNewUser.bind(_this);
             _this.loginUser = _this.loginUser.bind(_this);
@@ -28684,25 +28665,33 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         _createClass(Registration, [{
             key: 'createNewUser',
             value: function createNewUser() {
+                var _this2 = this;
+
                 var data = {
                     email: this.state.email,
                     password: this.state.password
                 };
-                _firebase2.default.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function (error) {
+                _firebase2.default.auth().createUserWithEmailAndPassword(data.email, data.password).then(function (result) {
+                    var user = result.user;
+                    _this2.setState({ user: user });
+                }).catch(function (error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     if (error.message) {
-                        this.state.warning = error.message;
+                        this.setState({ warning: error.message });
                     }
                     console.log(errorCode);
                     console.log(errorMessage);
                 });
 
-                _firebase2.default.auth().signInWithEmailAndPassword(data.email, data.password).catch(function (error) {
+                _firebase2.default.auth().signInWithEmailAndPassword(data.email, data.password).then(function (result) {
+                    var user = result.user;
+                    _this2.setState({ user: user });
+                }).catch(function (error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     if (error.message) {
-                        this.state.warning = error.message;
+                        this.setState({ warning: error.message });
                     }
                     console.log(errorCode);
                     console.log(errorMessage);
@@ -28711,15 +28700,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }, {
             key: 'loginUser',
             value: function loginUser() {
+                var _this3 = this;
+
                 var data = {
                     email: this.state.login_email,
                     password: this.state.login_password
                 };
-                _firebase2.default.auth().signInWithEmailAndPassword(data.email, data.password).catch(function (error) {
+                _firebase2.default.auth().signInWithEmailAndPassword(data.email, data.password).then(function (result) {
+                    var user = result.user;
+                    _this3.setState({ user: user });
+                }).catch(function (error) {
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     if (error.message) {
-                        this.state.warning = error.message;
+                        this.setState({ warning: error.message });
                     }
                     console.log(errorCode);
                     console.log(errorMessage);
@@ -28728,7 +28722,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         }, {
             key: 'render',
             value: function render() {
-                var _this2 = this;
+                var _this4 = this;
 
                 return (
                     // <Consumer> {
@@ -28760,10 +28754,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                         'form',
                                         { onSubmit: this.createNewUser },
                                         _react2.default.createElement('input', { type: 'email', className: 'form-control register-input', placeholder: 'Email Address', 'aria-label': 'Email Address', value: this.state.email, onChange: function onChange(event) {
-                                                return _this2.setState({ email: event.target.value });
+                                                return _this4.setState({ email: event.target.value });
                                             }, 'aria-describedby': 'basic-addon1' }),
                                         _react2.default.createElement('input', { type: 'password', className: 'form-control register-input', placeholder: 'Password', 'aria-label': 'Password', value: this.state.password, onChange: function onChange(event) {
-                                                return _this2.setState({ password: event.target.value });
+                                                return _this4.setState({ password: event.target.value });
                                             }, 'aria-describedby': 'basic-addon1' }),
                                         _react2.default.createElement(
                                             'button',
@@ -28796,10 +28790,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                                 'Log In to view analytics and change your settings!'
                                             ),
                                             _react2.default.createElement('input', { type: 'email', className: 'form-control register-input', placeholder: 'Email Address', 'aria-label': 'Email Address', value: this.state.login_email, onChange: function onChange(event) {
-                                                    return _this2.setState({ login_email: event.target.value });
+                                                    return _this4.setState({ login_email: event.target.value });
                                                 }, 'aria-describedby': 'basic-addon1' }),
                                             _react2.default.createElement('input', { type: 'password', className: 'form-control register-input', placeholder: 'Password', 'aria-label': 'Password', value: this.state.login_password, onChange: function onChange(event) {
-                                                    return _this2.setState({ login_password: event.target.value });
+                                                    return _this4.setState({ login_password: event.target.value });
                                                 }, 'aria-describedby': 'basic-addon1' }),
                                             _react2.default.createElement(
                                                 'a',

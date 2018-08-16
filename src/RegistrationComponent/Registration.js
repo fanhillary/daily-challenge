@@ -3,15 +3,6 @@ import './Registration.css';
 // const {Provider, Consumer} = AuthenticationContext;
 import firebase, {auth} from '../firebase.js';
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        console.log("signed in as");
-        console.log(user.email);
-    } else {
-      // No user is signed in.
-    }
-  });
-
 class Registration extends Component {
   constructor(props) {
     super(props);
@@ -21,32 +12,40 @@ class Registration extends Component {
         password: "",
         login_email: "",
         login_password: "",
-        warning: ""
+        warning: "",
+        user: null,
     }
     this.createNewUser = this.createNewUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
   }
-
   createNewUser() {
     var data = {
         email: this.state.email,
         password: this.state.password
     }
-    firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function(error) {
+    firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+    .then((result) => {
+        const user = result.user;
+        this.setState({ user: user });  
+    }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (error.message) {
-            this.state.warning = error.message;
+            this.setState({warning: error.message});
         }
         console.log(errorCode);
         console.log(errorMessage);
       });
 
-    firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
+    firebase.auth().signInWithEmailAndPassword(data.email, data.password)
+    .then((result) => {
+        const user = result.user;
+        this.setState({ user: user });  
+    }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (error.message) {
-            this.state.warning = error.message;
+            this.setState({warning: error.message});
         }
         console.log(errorCode);
         console.log(errorMessage);
@@ -58,11 +57,15 @@ class Registration extends Component {
         email: this.state.login_email,
         password: this.state.login_password
     }
-    firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
+    firebase.auth().signInWithEmailAndPassword(data.email, data.password)
+    .then((result) => {
+        const user = result.user;
+        this.setState({ user: user });  
+    }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         if (error.message) {
-            this.state.warning = error.message;
+            this.setState({warning: error.message});
         }
         console.log(errorCode);
         console.log(errorMessage);

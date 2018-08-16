@@ -20,16 +20,6 @@ var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chine
 var loggedIn = false;
 import firebase, { auth } from '../firebase.js';
 
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    loggedIn = true;
-    console.log(loggedIn);
-  } else {
-    loggedIn = false;
-    console.log(loggedIn);
-
-  }
-});
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -37,9 +27,7 @@ class Home extends Component {
       currentChallenge: "",
       category: "",
       completedChallenges: [],
-      loggedIn: false,
-      user_id: null,
-      first_name: ""
+      user: null,
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -55,8 +43,14 @@ class Home extends Component {
 */
   componentDidMount() {
     this.generateChallenge();
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ user: user });
+      } else {
+        console.log("not logged in");
+      }
+    });
   }
-
 
 /*
 * Function Name: getRandomArbitrary
