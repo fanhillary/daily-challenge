@@ -17,15 +17,29 @@ var targets = ["your significant other", "your pet", "your sibling", "your mothe
 var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
 var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
+var loggedIn = false;
+import firebase, { auth } from '../firebase.js';
 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    loggedIn = true;
+    console.log(loggedIn);
+  } else {
+    loggedIn = false;
+    console.log(loggedIn);
 
+  }
+});
 class Home extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       currentChallenge: "",
       category: "",
-      completedChallenges: []
+      completedChallenges: [],
+      loggedIn: false,
+      user_id: null,
+      first_name: ""
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -223,6 +237,8 @@ undoCompletion() {
     return (
       <div>
         <div>
+            {/* { this.state.loggedIn ? <h2> Hi, {this.props.first_name}</h2> : null } */}
+            { loggedIn ? <h2> Hello! </h2> : null }
             <h3> Your Challenge For Today</h3>
             <h1> {this.state.currentChallenge} </h1>
             <p> Category: {this.state.category} </p>

@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 import './Registration.css';
+// const {Provider, Consumer} = AuthenticationContext;
+import firebase, {auth} from '../firebase.js';
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        console.log("signed in as");
+        console.log(user.email);
+    } else {
+      // No user is signed in.
+    }
+  });
+
 class Registration extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state ={
-        first_name: "",
+        // TODO: Figure out how to not use separate state values for each input
         email: "",
-        password: ""
+        password: "",
+        login_email: "",
+        login_password: "",
+        warning: ""
     }
     this.createNewUser = this.createNewUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
@@ -14,67 +29,83 @@ class Registration extends Component {
 
   createNewUser() {
     var data = {
-        first_name: this.state.first_name,
         email: this.state.email,
         password: this.state.password
     }
-    console.log(data);
+    firebase.auth().createUserWithEmailAndPassword(data.email, data.password).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (error.message) {
+            this.state.warning = error.message;
+        }
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
 
-    fetch('http://localhost:3000/create-user', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(function(response) {  // returns a promise
-        console.log(response);
-        response.json().then(function(data) {
-            console.log(data)
-        });
-        }).catch(function(err) {
-        console.log(err)
+    firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (error.message) {
+            this.state.warning = error.message;
+        }
+        console.log(errorCode);
+        console.log(errorMessage);
     });
-  }
+}
 
   loginUser() {
-      console.log("check login!");
-
-  }
+    var data = {
+        email: this.state.login_email,
+        password: this.state.login_password
+    }
+    firebase.auth().signInWithEmailAndPassword(data.email, data.password).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (error.message) {
+            this.state.warning = error.message;
+        }
+        console.log(errorCode);
+        console.log(errorMessage);
+    });
+}
 
   render() {
     return (
-    <div className="container"> 
-        <div className="row">
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">New to Daily Challenge?</h5>
-                    <p className="card-text">Register to use all features and keep track of the challenges you've completed!</p>
-                    <form onSubmit={this.createNewUser}>
-                        <input type="text" className="form-control register-input" placeholder="First Name" aria-label="First Name" value={this.state.first_name} onChange = {(event) => this.setState({first_name: event.target.value})} aria-describedby="basic-addon1"></input>
-                        <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
-                        <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
+    // <Consumer> {
+    //     value =>
+        <div className="container"> 
+            {this.state.warning}
+            <div className="row">
+                <div className="card">
+                    <div className="card-body">
+                        <h5 className="card-title">New to Daily Challenge?</h5>
+                        <p className="card-text">Register to use all features and keep track of the challenges you've completed!</p>
+                        <form onSubmit={this.createNewUser}>
+                            <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
+                            <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
 
-                        <button type="submit" className="btn btn-primary">Register</button>
-                    </form>
-                </div>
-            </div>
-            <div className="card">
-                <div className="card-body">
-                    <div className="card-contents">
-                        <form onSubmit={this.loginUser}>
-                            <h5 className="card-title">Returning User?</h5>
-                            <p className="card-text">Log In to view analytics and change your settings!</p>
-                            <input type="text" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" aria-describedby="basic-addon1"></input>
-                            <input type="text" className="form-control register-input" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1"></input>
-                            <a href="#" className="forgot-link">Forgot Password?</a>
-                            <button type="submit" className="btn btn-primary">Login</button>
+                            <button type="submit" className="btn btn-primary">Register</button>
                         </form>
+                    </div>
+                </div>
+                <div className="card">
+                    <div className="card-body">
+                        <div className="card-contents">
+                            <form onSubmit={this.loginUser}>
+                                <h5 className="card-title">Returning User?</h5>
+                                <p className="card-text">Log In to view analytics and change your settings!</p>
+                                <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.login_email} onChange = {(event) => this.setState({login_email: event.target.value})} aria-describedby="basic-addon1"></input>
+                                <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.login_password} onChange = {(event) => this.setState({login_password: event.target.value})} aria-describedby="basic-addon1"></input>
+                                <a href="#" className="forgot-link">Forgot Password?</a>
+                                <button type="submit" className="btn btn-primary">Login</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    // }
+    // </Consumer>
       );
     }
 }

@@ -5,16 +5,30 @@ import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
 import Settings from "./Settings";
 import Registration from "./RegistrationComponent/Registration";
+import firebase, { auth } from './firebase.js';
+
+var loggedIn = false;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    loggedIn = true;
+  } else {
+    loggedIn = false;
+  }
+});
 
 class App extends Component {
-  constructor() {
-    super();
-  
-    this.registerUser = this.registerUser.bind(this);
+  constructor(props) {
+    super(props);
+    this.logOut = this.logOut.bind(this);
   }
-  
-  registerUser() {
-
+ 
+  logOut() {
+    firebase.auth().signOut().then(function() {
+      loggedIn = false;
+    }).catch(function(error) {
+      console.log(error)
+    });
   }
   render() {
     return (
@@ -24,7 +38,9 @@ class App extends Component {
               <li><NavLink to="/">Home</NavLink></li>
               <li><NavLink to="/analytics">Analytics</NavLink></li>
               <li><NavLink to="/settings">Settings</NavLink></li>
-              <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button>
+              { loggedIn ? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
+
+              
           </ul>
           <div className="content">
               <Route exact path="/" component={Home}/>

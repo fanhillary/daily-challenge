@@ -4,7 +4,6 @@ let morgan = require('morgan');
 let pg = require('pg');
 let path = require('path');
 
-
 const PORT = 3000;
 
 let pool = new pg.Pool({
@@ -56,27 +55,27 @@ app.post('/new-command', function(request, response) {
 });
 
 app.post('/create-user', function(request, response) {
-    var first_name = request.body.first_name;
     var email = request.body.email;
     var password = request.body.password;
-    let values = [first_name, email, password];
 
-    // connect to the postgres database
-    pool.connect(( err, db, done) => {
-        if (err) {
-            return response.status(400).send(err);
-        } else {
-            db.query('INSERT INTO users (first_name, email, password) VALUES($1, $2, crypt($3, gen_salt(\'bf\')))', [... values ], (err, table) => {
-                done();
-                if (err) {
-                    return response.status(400).send(err);
-                } else {
-                    db.end(); // close connection
-                    response.status(201).send({message: "New User Created!"});
-                }
-            })
-        }
-    })
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+});
+
+app.post('/login-user', function(request, response) {
+    var email = request.body.email;
+    var password = request.body.password;
+
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+    });
 });
 
 app.post('/remove-command', function(request, response) {
