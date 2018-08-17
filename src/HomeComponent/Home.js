@@ -18,7 +18,11 @@ var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
 var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 var loggedIn = false;
-import firebase, { auth } from '../firebase.js';
+import firebase, { auth, db } from '../firebase.js';
+const settings = {
+  timestampsInSnapshots: true
+};
+db.settings(settings);
 
 class Home extends Component {
   constructor(props) {
@@ -47,6 +51,7 @@ class Home extends Component {
       if (user) {
         console.log("logged in");
         this.setState({ user: user });
+        console.log(this.state.user);
       } else {
         this.setState({ user: null });
         console.log("not logged in");
@@ -169,29 +174,60 @@ getRandomArbitrary(min, max) {
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
-    // add command to database
-    let data = {
-      commands: this.state.currentChallenge,
-      type: this.state.category,
-      users: 0,
-    };
+    // // add command to database
+    // db.collection("completed_commands").doc(this.state.currentChallenge).set({
+    //   type: this.state.category,
+    //   command: this.state.currentChallenge
+    // }).then(function(docRef) {
+    //   console.log("Document written with ID: ", docRef.id);
+    // })
+    // .catch(function(error) {
+    //     console.error("Error adding document: ", error);
+    // });
+    if(this.state.user) {
+      var docRef = db.collection("users").doc(this.state.user.email);
 
-    // xmlhttprequest()
-    fetch('http://localhost:3000/new-command', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }).then(function(response) {  // returns a promise
-        console.log(response);
-        response.json().then(function(data) {
-          console.log(data)
-        });
-      }).catch(function(err) {
-        console.log(err)
+      docRef.get().then(function(doc) {
+        if (doc.exists) {
+          var user_data = doc.data();
+          let new_data = {
+            challenges: this.state.currentChallenge,
+            type: this.state.category,
+            date_complated: new Date(),
+            times_completed: 1,
+          };
+          var updated_challenges = user_data.completed_challenges;
+          completed_challenges.push(new_data);
+          console.log("Document data:", user_data);
+          docRef.set({
+            name: user.displayName,
+            completed_challenges: updated_challenges,
+            duplicates: false
+          });
+        }
+      }).catch(function(error) {
+          console.log("Error getting document:", error);
       });
+    } else {
+      console.log("guest user")
+    } 
+  
+    // // xmlhttprequest()
+    // fetch('http://localhost:3000/new-command', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json'
+    //   },
+    //   body: JSON.stringify(data)
+    // }).then(function(response) {  // returns a promise
+    //     console.log(response);
+    //     response.json().then(function(data) {
+    //       console.log(data)
+    //     });
+    //   }).catch(function(err) {
+    //     console.log(err)
+    //   });
   }
 
   /*
@@ -206,35 +242,55 @@ undoCompletion() {
   document.body.style.transition = "all 1s ease-out";
 
   // remove command from database
-  let data = {
-    commands: this.state.currentChallenge,
-    type: this.state.category,
-    users: 0,
-  };
+  // let data = {
+  //   commands: this.state.currentChallenge,
+  //   type: this.state.category,
+  //   users: 0,
+  // };
 
-  // xmlhttprequest()
-  fetch('http://localhost:3000/remove-command', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(data)
-  }).then(function(response) {  // returns a promise
-      console.log(response);
-      response.json().then(function(data) {
-        console.log(data)
-      });
-    }).catch(function(err) {
-      console.log(err)
+  if(this.state.user) {
+    var docRef = db.collection("users").doc(this.state.user.email);
+
+    docRef.get().then(function(doc) {
+      if (doc.exists) {
+        var user_data = doc.data();
+        var updated_challenges = user_data.completed_challenges;
+        completed_challenges.pop();
+        docRef.set({
+          name: user.displayName,
+          completed_challenges: updated_challenges,
+          duplicates: false
+        })
+      }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
     });
+  } else {
+    console.log("guest user")
+  } 
+  // // xmlhttprequest()
+  // fetch('http://localhost:3000/remove-command', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json'
+  //   },
+  //   body: JSON.stringify(data)
+  // }).then(function(response) {  // returns a promise
+  //     console.log(response);
+  //     response.json().then(function(data) {
+  //       console.log(data)
+  //     });
+  //   }).catch(function(err) {
+  //     console.log(err)
+  //   });
 }
   render() {
     return (
       <div>
         <div>
             {/* { this.state.loggedIn ? <h2> Hi, {this.props.first_name}</h2> : null } */}
-            { this.state.user? <h2> Hello! </h2> : null }
+            { this.state.user? <h2> Hi {this.state.user.displayName}! </h2> : null }
             <h3> Your Challenge For Today</h3>
             <h1> {this.state.currentChallenge} </h1>
             <p> Category: {this.state.category} </p>

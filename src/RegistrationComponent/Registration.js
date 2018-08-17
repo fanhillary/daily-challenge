@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import './Registration.css';
 // const {Provider, Consumer} = AuthenticationContext;
-import firebase, {auth} from '../firebase.js';
+import firebase, {auth, db} from '../firebase.js';
 import { withRouter } from 'react-router'
 
+const settings = {
+    timestampsInSnapshots: true
+  };
+db.settings(settings);
 
 class Registration extends Component {
   constructor(props) {
     super(props);
     this.state ={
         // TODO: Figure out how to not use separate state values for each input
+        name: "",
         email: "",
         password: "",
         login_email: "",
@@ -35,34 +40,32 @@ class Registration extends Component {
 
   createNewUser() {
     var data = {
+        name: this.state.name,
         email: this.state.email,
         password: this.state.password
     }
     firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
-    .catch(function(error) {
+    .then(() => {
+        var user = firebase.auth().currentUser;
+        user.updateProfile({
+            displayName: data.name,    
+        });
+
+        db.collection("users").doc(user.email).set({
+            name: user.displayName,
+            completed_challenges: [],
+            duplicates: false
+        })
+        this.props.history.push(`/`);
+
+    }
+    ).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-        if (error.message) {
-            this.setState({warning: error.message});
-        }
         console.log(errorCode);
         console.log(errorMessage);
       });
-
-    firebase.auth().signInWithEmailAndPassword(data.email, data.password)
-    .then((result) => {
-        const user = result.user;
-        this.setState({ user: user });
-    }).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (error.message) {
-            this.setState({warning: error.message});
-        }
-        console.log(errorCode);
-        console.log(errorMessage);
-    });
-}
+  }
 
   loginUser() {
     var data = {
@@ -78,8 +81,8 @@ class Registration extends Component {
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-        if (error.message) {
-            this.setState({warning: error.message});
+        if (error.message == "EMAIL_NOT_FOUND") {
+            this.setState({warning: "Email was not found"});
         }
         console.log(errorCode);
         console.log(errorMessage);
@@ -98,6 +101,7 @@ class Registration extends Component {
                         <h5 className="card-title">New to Daily Challenge?</h5>
                         <p className="card-text">Register to use all features and keep track of the challenges you've completed!</p>
                         <form onSubmit={this.createNewUser}>
+                            <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
                             <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
                             <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
 

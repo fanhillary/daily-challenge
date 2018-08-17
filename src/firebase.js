@@ -1,4 +1,5 @@
 var firebase = require("firebase");
+require("firebase/firestore");
 
 var config = {
     apiKey: "AIzaSyAYSAWMfJdxW46ZTes2IRwN3kMP5WKoTy8",
@@ -11,4 +12,5 @@ var config = {
 
 firebase.initializeApp(config);
 export const auth = firebase.auth();
+export const db = firebase.firestore();
 export default firebase;
