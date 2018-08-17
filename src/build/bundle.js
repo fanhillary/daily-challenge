@@ -27828,6 +27828,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     }, {
       key: 'completeChallenge',
       value: function completeChallenge() {
+        var _this3 = this;
+
         document.getElementById("refreshChallenge").disabled = true;
         document.body.style.setProperty('background-color', 'MediumSeaGreen');
         document.body.style.transition = "all 1s ease-out";
@@ -27849,19 +27851,28 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             if (doc.exists) {
               var user_data = doc.data();
               var new_data = {
-                challenges: this.state.currentChallenge,
-                type: this.state.category,
-                date_complated: new Date(),
-                times_completed: 1
+                challenges: _this3.state.currentChallenge,
+                type: _this3.state.category,
+                date_complated: new Date()
               };
-              var updated_challenges = user_data.completed_challenges;
-              completed_challenges.push(new_data);
               console.log("Document data:", user_data);
-              docRef.set({
-                name: user.displayName,
-                completed_challenges: updated_challenges,
-                duplicates: false
-              });
+
+              if (user_data.completed_challenges == null) {
+                console.log("empty data");
+                docRef.set({
+                  name: _this3.state.user.displayName,
+                  completed_challenges: [new_data],
+                  duplicates: false
+                });
+              } else {
+                var updated_challenges = user_data.completed_challenges;
+                updated_challenges.push(new_data);
+                docRef.set({
+                  name: _this3.state.user.displayName,
+                  completed_challenges: updated_challenges,
+                  duplicates: false
+                });
+              }
             }
           }).catch(function (error) {
             console.log("Error getting document:", error);
@@ -27890,6 +27901,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     }, {
       key: 'undoCompletion',
       value: function undoCompletion() {
+        var _this4 = this;
+
         document.getElementById("refreshChallenge").disabled = false;
         document.body.style.setProperty('background-color', '#FFCC00');
         document.body.style.transition = "all 1s ease-out";
@@ -27908,9 +27921,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             if (doc.exists) {
               var user_data = doc.data();
               var updated_challenges = user_data.completed_challenges;
-              completed_challenges.pop();
+              updated_challenges.pop();
               docRef.set({
-                name: user.displayName,
+                name: _this4.state.user.displayName,
                 completed_challenges: updated_challenges,
                 duplicates: false
               });

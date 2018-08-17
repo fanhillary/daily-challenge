@@ -187,23 +187,32 @@ getRandomArbitrary(min, max) {
     if(this.state.user) {
       var docRef = db.collection("users").doc(this.state.user.email);
 
-      docRef.get().then(function(doc) {
+      docRef.get().then((doc) => {
         if (doc.exists) {
           var user_data = doc.data();
           let new_data = {
             challenges: this.state.currentChallenge,
             type: this.state.category,
             date_complated: new Date(),
-            times_completed: 1,
           };
-          var updated_challenges = user_data.completed_challenges;
-          completed_challenges.push(new_data);
           console.log("Document data:", user_data);
-          docRef.set({
-            name: user.displayName,
-            completed_challenges: updated_challenges,
-            duplicates: false
-          });
+
+          if(user_data.completed_challenges == null) {
+            console.log("empty data");
+            docRef.set({
+              name: this.state.user.displayName,
+              completed_challenges: [new_data],
+              duplicates: false
+            });
+          } else {
+            var updated_challenges = user_data.completed_challenges;
+            updated_challenges.push(new_data);
+            docRef.set({
+              name: this.state.user.displayName,
+              completed_challenges: updated_challenges,
+              duplicates: false
+            });
+          }
         }
       }).catch(function(error) {
           console.log("Error getting document:", error);
@@ -251,13 +260,13 @@ undoCompletion() {
   if(this.state.user) {
     var docRef = db.collection("users").doc(this.state.user.email);
 
-    docRef.get().then(function(doc) {
+    docRef.get().then((doc) => {
       if (doc.exists) {
         var user_data = doc.data();
         var updated_challenges = user_data.completed_challenges;
-        completed_challenges.pop();
+        updated_challenges.pop();
         docRef.set({
-          name: user.displayName,
+          name: this.state.user.displayName,
           completed_challenges: updated_challenges,
           duplicates: false
         })
