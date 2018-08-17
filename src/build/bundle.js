@@ -25489,9 +25489,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
       var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
       _this.state = {
-        user: null
+        user: null,
+        disabled: false
       };
       _this.logOut = _this.logOut.bind(_this);
+      _this.handleClick = _this.handleClick.bind(_this);
       return _this;
     }
 
@@ -25502,11 +25504,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
         _firebase.auth.onAuthStateChanged(function (user) {
           if (user) {
-            console.log("logged in");
+            console.log("logged in - app.js");
             _this2.setState({ user: user });
+            _this2.setState({ disabled: false });
           } else {
             _this2.setState({ user: null });
-            console.log("not logged in");
+            _this2.setState({ disabled: true });
+
+            console.log("not logged in -app.js");
           }
         });
       }
@@ -25520,8 +25525,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         });
       }
     }, {
+      key: 'handleClick',
+      value: function handleClick(e) {
+        if (this.state.disabled) e.preventDefault();
+      }
+    }, {
       key: 'render',
       value: function render() {
+        var _this3 = this;
+
         return _react2.default.createElement(
           _reactRouterDom.HashRouter,
           null,
@@ -25545,7 +25557,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 null,
                 _react2.default.createElement(
                   _reactRouterDom.NavLink,
-                  { to: '/analytics' },
+                  { onClick: function onClick(e) {
+                      return _this3.handleClick(e);
+                    }, to: '/analytics' },
                   'Analytics'
                 )
               ),
@@ -25554,7 +25568,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 null,
                 _react2.default.createElement(
                   _reactRouterDom.NavLink,
-                  { to: '/settings' },
+                  { onClick: function onClick(e) {
+                      return _this3.handleClick(e);
+                    }, to: '/settings' },
                   'Settings'
                 )
               ),

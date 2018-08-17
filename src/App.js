@@ -12,18 +12,24 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
+      disabled: false,
     }
     this.logOut = this.logOut.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log("logged in");
+        console.log("logged in - app.js");
         this.setState({ user: user });
+        this.setState({ disabled: false });
+
       } else {
         this.setState({ user: null });
-        console.log("not logged in");
+        this.setState({ disabled: true });
+
+        console.log("not logged in -app.js");
       }
     });
   }
@@ -36,14 +42,18 @@ class App extends Component {
     });
   }
 
+  handleClick(e){
+    if(this.state.disabled) e.preventDefault()
+  }
+
   render() {
     return (
       <HashRouter>
         <div className="App">
           <ul className="header">
               <li><NavLink to="/">Home</NavLink></li>
-              <li><NavLink to="/analytics">Analytics</NavLink></li>
-              <li><NavLink to="/settings">Settings</NavLink></li>
+              <li><NavLink onClick={(e) => this.handleClick(e)} to="/analytics">Analytics</NavLink></li>
+              <li><NavLink onClick={(e) => this.handleClick(e)} to="/settings">Settings</NavLink></li>
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
           <div className="content">
