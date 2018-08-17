@@ -27727,6 +27727,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
       value: function componentDidMount() {
         var _this2 = this;
 
+        document.body.style.setProperty('background-color', '#FFCC00');
         this.generateChallenge();
         _firebase.auth.onAuthStateChanged(function (user) {
           if (user) {
@@ -27834,16 +27835,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         document.body.style.setProperty('background-color', 'MediumSeaGreen');
         document.body.style.transition = "all 1s ease-out";
 
-        // // add command to database
-        // db.collection("completed_commands").doc(this.state.currentChallenge).set({
-        //   type: this.state.category,
-        //   command: this.state.currentChallenge
-        // }).then(function(docRef) {
-        //   console.log("Document written with ID: ", docRef.id);
-        // })
-        // .catch(function(error) {
-        //     console.error("Error adding document: ", error);
-        // });
         if (this.state.user) {
           var docRef = _firebase.db.collection("users").doc(this.state.user.email);
 
@@ -27880,23 +27871,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         } else {
           console.log("guest user");
         }
-
-        // // xmlhttprequest()
-        // fetch('http://localhost:3000/new-command', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Accept': 'application/json'
-        //   },
-        //   body: JSON.stringify(data)
-        // }).then(function(response) {  // returns a promise
-        //     console.log(response);
-        //     response.json().then(function(data) {
-        //       console.log(data)
-        //     });
-        //   }).catch(function(err) {
-        //     console.log(err)
-        //   });
       }
     }, {
       key: 'undoCompletion',
@@ -27934,22 +27908,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         } else {
           console.log("guest user");
         }
-        // // xmlhttprequest()
-        // fetch('http://localhost:3000/remove-command', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Accept': 'application/json'
-        //   },
-        //   body: JSON.stringify(data)
-        // }).then(function(response) {  // returns a promise
-        //     console.log(response);
-        //     response.json().then(function(data) {
-        //       console.log(data)
-        //     });
-        //   }).catch(function(err) {
-        //     console.log(err)
-        //   });
       }
     }, {
       key: 'render',

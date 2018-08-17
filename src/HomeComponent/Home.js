@@ -46,6 +46,7 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
+    document.body.style.setProperty('background-color', '#FFCC00');
     this.generateChallenge();
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -174,16 +175,6 @@ getRandomArbitrary(min, max) {
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
-    // // add command to database
-    // db.collection("completed_commands").doc(this.state.currentChallenge).set({
-    //   type: this.state.category,
-    //   command: this.state.currentChallenge
-    // }).then(function(docRef) {
-    //   console.log("Document written with ID: ", docRef.id);
-    // })
-    // .catch(function(error) {
-    //     console.error("Error adding document: ", error);
-    // });
     if(this.state.user) {
       var docRef = db.collection("users").doc(this.state.user.email);
 
@@ -220,23 +211,6 @@ getRandomArbitrary(min, max) {
     } else {
       console.log("guest user")
     } 
-  
-    // // xmlhttprequest()
-    // fetch('http://localhost:3000/new-command', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Accept': 'application/json'
-    //   },
-    //   body: JSON.stringify(data)
-    // }).then(function(response) {  // returns a promise
-    //     console.log(response);
-    //     response.json().then(function(data) {
-    //       console.log(data)
-    //     });
-    //   }).catch(function(err) {
-    //     console.log(err)
-    //   });
   }
 
   /*
@@ -277,22 +251,6 @@ undoCompletion() {
   } else {
     console.log("guest user")
   } 
-  // // xmlhttprequest()
-  // fetch('http://localhost:3000/remove-command', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json'
-  //   },
-  //   body: JSON.stringify(data)
-  // }).then(function(response) {  // returns a promise
-  //     console.log(response);
-  //     response.json().then(function(data) {
-  //       console.log(data)
-  //     });
-  //   }).catch(function(err) {
-  //     console.log(err)
-  //   });
 }
   render() {
     return (
