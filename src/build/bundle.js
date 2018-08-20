@@ -71430,6 +71430,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
       _this.state = {
         user: null,
         totalCompleted: 0,
+        categoryPieData: [],
         completed_challenges: []
       };
       return _this;
@@ -71465,8 +71466,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         var docRef = _firebase.db.collection("users").doc(this.state.user.email);
         docRef.get().then(function (doc) {
           var user_data = doc.data();
-          _this3.setState({ completed_challenges: user_data.completed_challenges });
           _this3.setState({ totalCompleted: user_data.completed_challenges.length });
+          _this3.setState({ completed_challenges: user_data.completed_challenges });
+
+          // calculate pie chart category count
+          var completed_challenges = user_data.completed_challenges;
+          var categoriesCompleted = {
+            Action: 0,
+            Food: 0,
+            Finance: 0,
+            Exercise: 0,
+            Communication: 0
+          };
+          for (var challenge in completed_challenges) {
+            categoriesCompleted[challenge.type]++;
+          }
+          for (var category in categoriesCompleted) {
+            _this3.state.categoryPieData.push([category, categoriesCompleted[category]]);
+          }
         });
       }
     }, {
@@ -71541,11 +71558,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                     { className: 'card-title' },
                     'Categories Completed'
                   ),
-                  _react2.default.createElement(
-                    'p',
-                    { className: 'card-text' },
-                    ' INSERT PIE CHART'
-                  )
+                  _react2.default.createElement(_reactChartkick.PieChart, { data: this.state.categoryPieData })
                 )
               )
             ),

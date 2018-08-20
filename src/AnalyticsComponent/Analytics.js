@@ -17,6 +17,7 @@ class Analytics extends Component {
     this.state = {
       user: null,
       totalCompleted: 0,
+      categoryPieData: [],
       completed_challenges: [],
     };
   }
@@ -43,13 +44,29 @@ class Analytics extends Component {
     var docRef = db.collection("users").doc(this.state.user.email);
     docRef.get().then((doc) => {
       var user_data = doc.data();
-      this.setState({ completed_challenges: user_data.completed_challenges });
       this.setState({ totalCompleted: user_data.completed_challenges.length });
+      this.setState({ completed_challenges: user_data.completed_challenges });
+
+      // calculate pie chart category count
+      var completed_challenges = user_data.completed_challenges;
+      var categoriesCompleted = {
+        Action: 0,
+        Food: 0,
+        Finance: 0,
+        Exercise: 0,
+        Communication: 0
+      };
+      for (let challenge in completed_challenges) {
+        categoriesCompleted[challenge.type]++;
+      }
+      for (var category in categoriesCompleted) {
+        this.state.categoryPieData.push([category, categoriesCompleted[category]]);
+      }
+  
     });
 
   }
 
-  
   render() {
     return (
       <div className="container">
@@ -75,7 +92,7 @@ class Analytics extends Component {
             <div className="analytics-card">
               <div className="card-body">
                   <h5 className="card-title">Categories Completed</h5>
-                  <p className="card-text"> INSERT PIE CHART</p>
+                  <PieChart data={this.state.categoryPieData} />
               </div>
             </div>
           </div>
