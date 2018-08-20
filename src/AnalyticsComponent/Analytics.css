@@ -19,3 +19,12 @@
   #total-card {
       width: 100%;
   }
+
+  .total-completed-challenges {
+    font-size: 250%;
+    font-weight: bold;
+  }
+
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+  }

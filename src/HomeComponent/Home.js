@@ -47,8 +47,7 @@ class Home extends Component {
 */
   componentDidMount() {
     document.body.style.setProperty('background-color', '#FFCC00');
-    this.generateChallenge();
-    auth.onAuthStateChanged((user) => {
+    this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged in");
         this.setState({ user: user });
@@ -58,8 +57,12 @@ class Home extends Component {
         console.log("not logged in");
       }
     });
+    this.generateChallenge();
   }
 
+  componentWillUnmount() {
+    this.fireBaseListener();
+  }
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters

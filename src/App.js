@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    auth.onAuthStateChanged((user) => {
+    this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged in - app.js");
         this.setState({ user: user });
@@ -34,9 +34,14 @@ class App extends Component {
     });
   }
  
+  componentWillUnmount() {
+    this.fireBaseListener();
+  }
+
   logOut() {
     auth.signOut().then(function() {
       this.setState({user: null});
+      this.props.history.push(`/`)
     }).catch(function(error) {
       console.log(error)
     });

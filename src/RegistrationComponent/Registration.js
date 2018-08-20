@@ -27,17 +27,20 @@ class Registration extends Component {
   }
 
   componentDidMount() {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        console.log("logged in");
-        this.props.history.push(`/`)
-      } else {
-        this.setState({ user: null });
-        console.log("not logged in");
-      }
+    this.fireBaseListener = auth.onAuthStateChanged((user) => {
+        if (user) {
+            console.log("logged in");
+            this.props.history.push(`/`)
+          } else {
+            this.setState({ user: null });
+            console.log("not logged in");
+          }
     });
   }
 
+  componentWillUnmount() {
+    this.fireBaseListener();
+  }
   createNewUser() {
     var data = {
         name: this.state.name,
