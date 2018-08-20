@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import "./Analytics.css";
 import firebase, { auth, db } from '../firebase.js';
+import ReactChartkick, { PieChart } from 'react-chartkick'
+import Chart from 'chart.js'
+
+ReactChartkick.addAdapter(Chart)
+
 const settings = {
   timestampsInSnapshots: true
 };
@@ -12,6 +17,7 @@ class Analytics extends Component {
     this.state = {
       user: null,
       totalCompleted: 0,
+      completed_challenges: [],
     };
   }
 
@@ -21,8 +27,7 @@ class Analytics extends Component {
         console.log("logged in - analytics");
         this.setState({ user: user });
         console.log(this.state.user);
-        this.getTotalCompleted();
-
+        this.getCompletedChallenges();
       } else {
         this.setState({ user: null });
         console.log("not logged in - analytics");
@@ -34,10 +39,11 @@ class Analytics extends Component {
     this.fireBaseListener();
   }
 
-  getTotalCompleted() {
+  getCompletedChallenges() {
     var docRef = db.collection("users").doc(this.state.user.email);
     docRef.get().then((doc) => {
       var user_data = doc.data();
+      this.setState({ completed_challenges: user_data.completed_challenges });
       this.setState({ totalCompleted: user_data.completed_challenges.length });
     });
 
@@ -77,7 +83,9 @@ class Analytics extends Component {
             <div className="analytics-card">
                 <div className="card-body">
                     <h5 className="card-title">History of Completed</h5>
-                    <p className="card-text"> List Completed</p>
+                      {this.state.completed_challenges.map(function(challenge) {
+                        return <p> {challenge.date_completed} {challenge.challenges} </p>
+                      })}
                 </div>
             </div>
           </div>
