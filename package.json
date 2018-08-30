@@ -13,9 +13,12 @@
     "pg": "^7.4.3",
     "react": "^16.4.1",
     "react-chartkick": "^0.3.0",
+    "react-d3-basic": "^1.6.11",
     "react-dom": "^16.4.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
+    "react-svg-piechart": "^2.1.1",
+    "recharts": "^1.1.0",
     "webpack": "^3.11.0",
     "webpack-cli": "^3.1.0"
   },

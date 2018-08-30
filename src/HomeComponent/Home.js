@@ -187,7 +187,7 @@ getRandomArbitrary(min, max) {
           let new_data = {
             challenges: this.state.currentChallenge,
             type: this.state.category,
-            date_complated: new Date(),
+            date_completed: new Date(),
           };
           console.log("Document data:", user_data);
 
