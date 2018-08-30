@@ -17,7 +17,6 @@ var targets = ["your significant other", "your pet", "your sibling", "your mothe
 var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
 var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
-var loggedIn = false;
 import firebase, { auth, db } from '../firebase.js';
 const settings = {
   timestampsInSnapshots: true
@@ -46,7 +45,10 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
+    // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
+
+    // check for user logged in or not
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged in");
@@ -57,7 +59,14 @@ class Home extends Component {
         console.log("not logged in");
       }
     });
-    this.generateChallenge();
+    // if user has already completed a challenge today, display appropriate message
+    if (localStorage.getItem("flag_daily_complete")) {
+      document.getElementById("refreshChallenge").disabled = true;
+      document.body.style.setProperty('background-color', 'MediumSeaGreen');
+      document.body.style.transition = "all 1s ease-out";
+    } else {
+      this.generateChallenge();
+    }
   }
 
   componentWillUnmount() {
@@ -182,7 +191,8 @@ getRandomArbitrary(min, max) {
       var docRef = db.collection("users").doc(this.state.user.email);
 
       docRef.get().then((doc) => {
-        if (doc.exists) {
+        if (doc.exists) { // if user exists
+          // obtain current copmleted challenges from firestore
           var user_data = doc.data();
           let new_data = {
             challenges: this.state.currentChallenge,
@@ -191,6 +201,7 @@ getRandomArbitrary(min, max) {
           };
           console.log("Document data:", user_data);
 
+          // if the data document has no data, insert first of its kind
           if(user_data.completed_challenges == null) {
             console.log("empty data");
             docRef.set({
@@ -198,7 +209,7 @@ getRandomArbitrary(min, max) {
               completed_challenges: [new_data],
               duplicates: false
             });
-          } else {
+          } else { // tack on newly completed challenge into firestore
             var updated_challenges = user_data.completed_challenges;
             updated_challenges.push(new_data);
             docRef.set({
@@ -207,6 +218,7 @@ getRandomArbitrary(min, max) {
               duplicates: false
             });
           }
+          localStorage.setItem( 'flag_daily_complete', true );
         }
       }).catch(function(error) {
           console.log("Error getting document:", error);
@@ -261,9 +273,13 @@ undoCompletion() {
         <div>
             {/* { this.state.loggedIn ? <h2> Hi, {this.props.first_name}</h2> : null } */}
             { this.state.user? <h2> Hi {this.state.user.displayName}! </h2> : null }
-            <h3> Your Challenge For Today</h3>
-            <h1> {this.state.currentChallenge} </h1>
-            <p> Category: {this.state.category} </p>
+            { localStorage.getItem("flag_daily_complete") ? <h3> Congratulations! You've completed your daily task. </h3> :
+            <div> 
+              <h3> Your Challenge For Today</h3> 
+              <h1> {this.state.currentChallenge} </h1>
+              <p> Category: {this.state.category} </p>
+            </div>
+            }
             <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
         </div>
 
