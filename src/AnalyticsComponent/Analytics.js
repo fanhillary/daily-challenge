@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import "./Analytics.css";
 import firebase, { auth, db } from '../firebase.js';
-import { PieChart, Pie } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer } from 'recharts';
+
+const PieChartLabels = ["Action", "Food", "Finance", "Exercise", "Communication"];
 
 const settings = {
   timestampsInSnapshots: true
@@ -43,7 +45,7 @@ class Analytics extends Component {
     docRef.get().then((doc) => {
       var user_data = doc.data();
       this.setState({ totalCompleted: user_data.completed_challenges.length });
-      this.setState({ completed_challenges: user_data.completed_challenges.reverse() });
+      this.setState({ completed_challenges: user_data.completed_challenges.reverse().slice(0, 10)});
 
       // calculate pie chart category count
       var completed_challenges = user_data.completed_challenges;
@@ -59,15 +61,17 @@ class Analytics extends Component {
         categoriesCompleted[completed_challenges[i].type]++;
       }
       for (var category in categoriesCompleted) {
-        this.state.categoryPieData.push({title: category, value: categoriesCompleted[category]});
+        this.state.categoryPieData.push({name: category, value: categoriesCompleted[category]});
       }
-      console.log(this.state.categoryPieData[0].value);
+
+      console.log(this.state.categoryPieData);
     });
 
   }
 
   render() {
     return (
+      <div>
       <div className="container">
         <div className ="row">
           <div className="card bg-light mb-3" id="total-card">
@@ -83,11 +87,7 @@ class Analytics extends Component {
             <div className="analytics-card">
               <div className="card-body">
                   <h5 className="card-title">Categories Completed</h5>
-                    <PieChart width={230} height={250}>
-                      {this.state.categoryPieData.map(function(category, i) {
-                        return <Pie key={i} data={category.value} dataKey={category.value} nameKey={category.title} cx="50%" cy="50%" outerRadius={50} fill="#8884d8" />
-                      })}
-                    </PieChart>
+                     
                 </div>
             </div>
           </div>
@@ -103,6 +103,14 @@ class Analytics extends Component {
           </div>
         </div>
       </div>
+      <div>
+          <ResponsiveContainer width="100%" height="90%">
+          <PieChart width={730} height={250}>
+              <Pie data={this.state.categoryPieData} dataKey="CategoryPercentages" nameKey="Categories" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
     );
   }
 }
