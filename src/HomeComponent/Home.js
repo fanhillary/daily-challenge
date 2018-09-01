@@ -237,51 +237,6 @@ getRandomArbitrary(min, max) {
     }
   }
 
-//   /*
-// * Function Name: undoCompletion()
-// * Function Description: Un-saves the challenge from completion and changes css appropriately.
-// * Parameters: None.
-// * Return: None.
-// */
-// undoCompletion() {
-//   document.getElementById("refreshChallenge").disabled = false;
-//   document.body.style.setProperty('background-color', '#FFCC00');
-//   document.body.style.transition = "all 1s ease-out";
-
-//   // remove command from database
-//   // let data = {
-//   //   commands: this.state.currentChallenge,
-//   //   type: this.state.category,
-//   //   users: 0,
-//   // };
-
-//   if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
-//       if(this.state.user) {
-//       var docRef = db.collection("users").doc(this.state.user.email);
-
-//       docRef.get().then((doc) => {
-//         if (doc.exists) {
-//           var user_data = doc.data();
-//           var updated_challenges = user_data.completed_challenges;
-//           updated_challenges.pop();
-//           docRef.set({
-//             name: this.state.user.displayName,
-//             completed_challenges: updated_challenges,
-//             duplicates: false
-//           })
-//         }
-//       }).catch(function(error) {
-//           console.log("Error getting document:", error);
-//       });
-//     } else {
-//       console.log("guest user")
-//     } 
-
-//     localStorage.setItem( 'flag_daily_complete', false );
-
-//   }
-// }
-
   render() {
     return (
       <div>
