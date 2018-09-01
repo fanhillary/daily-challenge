@@ -41,7 +41,7 @@ class App extends Component {
     localStorage.clear();
     auth.signOut().then(function() {
       this.setState({user: null});
-      window.location.replace("http://localhost:3000/?#/");
+      window.location.replace("https://daily-random-challenge.herokuapp.com/?#/");
     }).catch(function(error) {
       console.log(error)
     });
