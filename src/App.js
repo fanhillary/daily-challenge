@@ -3,7 +3,6 @@ import { Route, NavLink, HashRouter} from "react-router-dom";
 import './App.css';
 import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
-import Settings from "./Settings";
 import Registration from "./RegistrationComponent/Registration";
 import firebase, { auth } from './firebase.js';
 
@@ -42,7 +41,7 @@ class App extends Component {
     localStorage.clear();
     auth.signOut().then(function() {
       this.setState({user: null});
-      this.props.history.push(`/`)
+      window.location.replace("http://localhost:3000/?#/");
     }).catch(function(error) {
       console.log(error)
     });
@@ -59,13 +58,11 @@ class App extends Component {
           <ul className="header">
               <li><NavLink to="/">Home</NavLink></li>
               <li><NavLink onClick={(e) => this.handleClick(e)} to="/analytics">Analytics</NavLink></li>
-              <li><NavLink onClick={(e) => this.handleClick(e)} to="/settings">Settings</NavLink></li>
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
           <div className="content">
               <Route exact path="/" component={Home}/>
               <Route path="/analytics" component={Analytics}/>
-              <Route path="/settings" component={Settings}/>
               <Route path="/register" component={Registration}/>
           </div>
         </div>

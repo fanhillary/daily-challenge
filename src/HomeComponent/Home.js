@@ -68,7 +68,6 @@ class Home extends Component {
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
     } else {
-      console.log("generated!");
       this.generateChallenge();
     }
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
@@ -188,6 +187,9 @@ getRandomArbitrary(min, max) {
 * Return: None.
 */
   completeChallenge() {
+    if (document.getElementById("refreshChallenge")) {
+      document.getElementById("refreshChallenge").disabled = true;
+    }
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
@@ -231,54 +233,54 @@ getRandomArbitrary(min, max) {
         console.log("guest user")
       }
       localStorage.setItem( 'flag_daily_complete', true );
- 
+      this.props.history.push(`/`);
     }
   }
 
-  /*
-* Function Name: undoCompletion()
-* Function Description: Un-saves the challenge from completion and changes css appropriately.
-* Parameters: None.
-* Return: None.
-*/
-undoCompletion() {
-  document.getElementById("refreshChallenge").disabled = false;
-  document.body.style.setProperty('background-color', '#FFCC00');
-  document.body.style.transition = "all 1s ease-out";
+//   /*
+// * Function Name: undoCompletion()
+// * Function Description: Un-saves the challenge from completion and changes css appropriately.
+// * Parameters: None.
+// * Return: None.
+// */
+// undoCompletion() {
+//   document.getElementById("refreshChallenge").disabled = false;
+//   document.body.style.setProperty('background-color', '#FFCC00');
+//   document.body.style.transition = "all 1s ease-out";
 
-  // remove command from database
-  // let data = {
-  //   commands: this.state.currentChallenge,
-  //   type: this.state.category,
-  //   users: 0,
-  // };
+//   // remove command from database
+//   // let data = {
+//   //   commands: this.state.currentChallenge,
+//   //   type: this.state.category,
+//   //   users: 0,
+//   // };
 
-  if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
-      if(this.state.user) {
-      var docRef = db.collection("users").doc(this.state.user.email);
+//   if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
+//       if(this.state.user) {
+//       var docRef = db.collection("users").doc(this.state.user.email);
 
-      docRef.get().then((doc) => {
-        if (doc.exists) {
-          var user_data = doc.data();
-          var updated_challenges = user_data.completed_challenges;
-          updated_challenges.pop();
-          docRef.set({
-            name: this.state.user.displayName,
-            completed_challenges: updated_challenges,
-            duplicates: false
-          })
-        }
-      }).catch(function(error) {
-          console.log("Error getting document:", error);
-      });
-    } else {
-      console.log("guest user")
-    } 
+//       docRef.get().then((doc) => {
+//         if (doc.exists) {
+//           var user_data = doc.data();
+//           var updated_challenges = user_data.completed_challenges;
+//           updated_challenges.pop();
+//           docRef.set({
+//             name: this.state.user.displayName,
+//             completed_challenges: updated_challenges,
+//             duplicates: false
+//           })
+//         }
+//       }).catch(function(error) {
+//           console.log("Error getting document:", error);
+//       });
+//     } else {
+//       console.log("guest user")
+//     } 
 
-    localStorage.setItem( 'flag_daily_complete', false );
+//     localStorage.setItem( 'flag_daily_complete', false );
 
-  }
-}
+//   }
+// }
 
   render() {
     return (
@@ -290,6 +292,7 @@ undoCompletion() {
               <h3> Your Challenge For Today</h3> 
               <h1> {this.state.currentChallenge} </h1>
               <p> Category: {this.state.category} </p>
+
               <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
             </div>
 
@@ -304,20 +307,23 @@ undoCompletion() {
          <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
         </div>
           :
-          <form className="form">
-            <div id="completionForm">
-              <div id="completionToggle" className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
+          <div>
+            <form className="form">
+              <div id="completionForm">
+                <div id="completionToggle" className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
 
-                <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active">
-                  <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete
-                </label>  
-                <label htmlFor="completeOption2" className="completeBtn btn btn-secondary" onClick={this.completeChallenge}>
-                  <input name="completeOption2" type="radio" id="complete" autoComplete="off" /> Complete
-                </label>
+                  <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active">
+                    <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete
+                  </label>  
+                  <label htmlFor="completeOption2" className="completeBtn btn btn-secondary" onClick={this.completeChallenge}>
+                    <input name="completeOption2" type="radio" id="complete" autoComplete="off" /> Complete
+                  </label>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         }
+        <p className="warning-note"> Note: Only one challenge can be completed per day and it cannot be undone. </p>
       </div>
     );
   }

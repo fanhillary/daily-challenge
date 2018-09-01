@@ -27,8 +27,12 @@ class Analytics extends Component {
         console.log(this.state.user);
         this.getCompletedChallenges();
       } else {
+
+        // autodirect to home tab if guest user.
         this.setState({ user: null });
         console.log("not logged in - analytics");
+        this.props.history.push(`/`);
+
       }
     });
   }
