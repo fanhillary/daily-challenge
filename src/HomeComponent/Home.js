@@ -1,6 +1,8 @@
 
 import React, { Component } from 'react';
 import './Home.css';
+import firebase, { auth, db } from '../firebase.js';
+import schedule from 'node-schedule';
 
 var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
 var listAction = ["Drink a beer or two", "Sit silently", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom"];
@@ -17,7 +19,8 @@ var targets = ["your significant other", "your pet", "your sibling", "your mothe
 var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
 var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
-import firebase, { auth, db } from '../firebase.js';
+
+
 const settings = {
   timestampsInSnapshots: true
 };
@@ -35,7 +38,7 @@ class Home extends Component {
   
     this.generateChallenge = this.generateChallenge.bind(this);
     this.completeChallenge = this.completeChallenge.bind(this);
-    this.undoCompletion = this.undoCompletion.bind(this);
+    // this.undoCompletion = this.undoCompletion.bind(this);
   }
 
 /*
@@ -59,14 +62,16 @@ class Home extends Component {
         console.log("not logged in");
       }
     });
+
     // if user has already completed a challenge today, display appropriate message
     if (localStorage.getItem("flag_daily_complete")) {
-      document.getElementById("refreshChallenge").disabled = true;
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
     } else {
+      console.log("generated!");
       this.generateChallenge();
     }
+    schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
   }
 
   componentWillUnmount() {
@@ -183,49 +188,51 @@ getRandomArbitrary(min, max) {
 * Return: None.
 */
   completeChallenge() {
-    document.getElementById("refreshChallenge").disabled = true;
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
-    if(this.state.user) {
-      var docRef = db.collection("users").doc(this.state.user.email);
+    if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
+      if(this.state.user) {
+        var docRef = db.collection("users").doc(this.state.user.email);
 
-      docRef.get().then((doc) => {
-        if (doc.exists) { // if user exists
-          // obtain current copmleted challenges from firestore
-          var user_data = doc.data();
-          let new_data = {
-            challenges: this.state.currentChallenge,
-            type: this.state.category,
-            date_completed: new Date(),
-          };
-          console.log("Document data:", user_data);
+        docRef.get().then((doc) => {
+          if (doc.exists) { // if user exists
+            // obtain current copmleted challenges from firestore
+            var user_data = doc.data();
+            let new_data = {
+              challenges: this.state.currentChallenge,
+              type: this.state.category,
+              date_completed: new Date(),
+            };
+            console.log("Document data:", user_data);
 
-          // if the data document has no data, insert first of its kind
-          if(user_data.completed_challenges == null) {
-            console.log("empty data");
-            docRef.set({
-              name: this.state.user.displayName,
-              completed_challenges: [new_data],
-              duplicates: false
-            });
-          } else { // tack on newly completed challenge into firestore
-            var updated_challenges = user_data.completed_challenges;
-            updated_challenges.push(new_data);
-            docRef.set({
-              name: this.state.user.displayName,
-              completed_challenges: updated_challenges,
-              duplicates: false
-            });
+            // if the data document has no data, insert first of its kind
+            if(user_data.completed_challenges == null) {
+              console.log("empty data");
+              docRef.set({
+                name: this.state.user.displayName,
+                completed_challenges: [new_data],
+                duplicates: false
+              });
+            } else { // tack on newly completed challenge into firestore
+              var updated_challenges = user_data.completed_challenges;
+              updated_challenges.push(new_data);
+              docRef.set({
+                name: this.state.user.displayName,
+                completed_challenges: updated_challenges,
+                duplicates: false
+              });
+            }
           }
-          localStorage.setItem( 'flag_daily_complete', true );
-        }
-      }).catch(function(error) {
-          console.log("Error getting document:", error);
-      });
-    } else {
-      console.log("guest user")
-    } 
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+      } else {
+        console.log("guest user")
+      }
+      localStorage.setItem( 'flag_daily_complete', true );
+ 
+    }
   }
 
   /*
@@ -246,56 +253,71 @@ undoCompletion() {
   //   users: 0,
   // };
 
-  if(this.state.user) {
-    var docRef = db.collection("users").doc(this.state.user.email);
+  if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
+      if(this.state.user) {
+      var docRef = db.collection("users").doc(this.state.user.email);
 
-    docRef.get().then((doc) => {
-      if (doc.exists) {
-        var user_data = doc.data();
-        var updated_challenges = user_data.completed_challenges;
-        updated_challenges.pop();
-        docRef.set({
-          name: this.state.user.displayName,
-          completed_challenges: updated_challenges,
-          duplicates: false
-        })
-      }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-    });
-  } else {
-    console.log("guest user")
-  } 
+      docRef.get().then((doc) => {
+        if (doc.exists) {
+          var user_data = doc.data();
+          var updated_challenges = user_data.completed_challenges;
+          updated_challenges.pop();
+          docRef.set({
+            name: this.state.user.displayName,
+            completed_challenges: updated_challenges,
+            duplicates: false
+          })
+        }
+      }).catch(function(error) {
+          console.log("Error getting document:", error);
+      });
+    } else {
+      console.log("guest user")
+    } 
+
+    localStorage.setItem( 'flag_daily_complete', false );
+
+  }
 }
+
   render() {
     return (
       <div>
         <div>
-            {/* { this.state.loggedIn ? <h2> Hi, {this.props.first_name}</h2> : null } */}
-            { this.state.user? <h2> Hi {this.state.user.displayName}! </h2> : null }
-            { localStorage.getItem("flag_daily_complete") ? <h3> Congratulations! You've completed your daily task. </h3> :
+            { this.state.user? <h2> Hi {this.state.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
+            { localStorage.getItem("flag_daily_complete") ? <h1> Congratulations! </h1> :
             <div> 
               <h3> Your Challenge For Today</h3> 
               <h1> {this.state.currentChallenge} </h1>
               <p> Category: {this.state.category} </p>
+              <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
             </div>
+
             }
-            <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
         </div>
 
-        <form className="form">
-          <div id="completionForm">
-            <div className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
-              <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active" onClick={this.undoCompletion}>
-                <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete 
-              </label>
+        
+        { localStorage.getItem("flag_daily_complete") ?
+        <div>
+         <h2> You've completed your daily task. </h2>
+         <br></br>
+         <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
+        </div>
+          :
+          <form className="form">
+            <div id="completionForm">
+              <div id="completionToggle" className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
 
-              <label htmlFor="completeOption2" className="completeBtn btn btn-secondary" onClick={this.completeChallenge}>
-                <input name="completeOption2" type="radio" id="complete" autoComplete="off" /> Complete
-              </label>
+                <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active">
+                  <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete
+                </label>  
+                <label htmlFor="completeOption2" className="completeBtn btn btn-secondary" onClick={this.completeChallenge}>
+                  <input name="completeOption2" type="radio" id="complete" autoComplete="off" /> Complete
+                </label>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        }
       </div>
     );
   }

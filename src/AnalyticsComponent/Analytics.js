@@ -3,8 +3,6 @@ import "./Analytics.css";
 import firebase, { auth, db } from '../firebase.js';
 import { PieChart, Pie, ResponsiveContainer } from 'recharts';
 
-const PieChartLabels = ["Action", "Food", "Finance", "Exercise", "Communication"];
-
 const settings = {
   timestampsInSnapshots: true
 };

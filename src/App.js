@@ -39,6 +39,7 @@ class App extends Component {
   }
 
   logOut() {
+    localStorage.clear();
     auth.signOut().then(function() {
       this.setState({user: null});
       this.props.history.push(`/`)

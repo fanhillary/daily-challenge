@@ -59,6 +59,8 @@ class Registration extends Component {
             completed_challenges: [],
             duplicates: false
         })
+        localStorage.clear();
+
         this.props.history.push(`/`);
 
     }
@@ -80,6 +82,7 @@ class Registration extends Component {
     .then((result) => {
         const user = result.user;
         this.setState({ user: user });
+        localStorage.clear();
         this.props.history.push(`/`);
     }).catch(function(error) {
         var errorCode = error.code;
