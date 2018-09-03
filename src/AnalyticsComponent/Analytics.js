@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import "./Analytics.css";
 import { auth, db } from '../firebase.js';
-import { PieChart, Pie, ResponsiveContainer } from 'recharts';
+
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
 
 const settings = {
   timestampsInSnapshots: true
@@ -89,12 +91,23 @@ class Analytics extends Component {
 
       // push into an array for more appropriate usage
       for (var category in categoriesCompleted) {
-        this.state.categoryPieData.push({name: category, value: categoriesCompleted[category]});
+        this.state.categoryPieData.push([category, categoriesCompleted[category]]);
       }
 
-      console.log(this.state.categoryPieData);
-    });
+      // create google pie chart with categories data
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', "Category");
+      data.addColumn('number', "Count");
+      data.addRows(this.state.categoryPieData);
+      var options = {
+      width:450,
+      height:350,
+      is3D: true
+     };
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
 
+      })
   }
 
   render() {
@@ -115,7 +128,7 @@ class Analytics extends Component {
             <div className="analytics-card">
               <div className="card-body">
                   <h5 className="card-title">Categories Completed</h5>
-                     
+                  <div id="chart_div"></div>
                 </div>
             </div>
           </div>
@@ -125,18 +138,11 @@ class Analytics extends Component {
                     <h5 className="card-title">History of Completed</h5>
                       {this.state.completed_challenges.map(function(challenge, i) {
                         return <p className="challenge-history" key={i}> {challenge.date_completed.toDate().getMonth()}/{challenge.date_completed.toDate().getDate()}/{challenge.date_completed.toDate().getFullYear()}  {challenge.challenges} </p>
-                      })}
+                      })}                
                 </div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-          <ResponsiveContainer width="100%" height="90%">
-          <PieChart width={730} height={250}>
-              <Pie data={this.state.categoryPieData} dataKey="CategoryPercentages" nameKey="Categories" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" />
-          </PieChart>
-        </ResponsiveContainer>
       </div>
     </div>
     );
