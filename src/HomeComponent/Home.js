@@ -38,7 +38,6 @@ class Home extends Component {
   
     this.generateChallenge = this.generateChallenge.bind(this);
     this.completeChallenge = this.completeChallenge.bind(this);
-    // this.undoCompletion = this.undoCompletion.bind(this);
   }
 
 /*
@@ -71,6 +70,16 @@ class Home extends Component {
       this.generateChallenge();
     }
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
+  
+    document.getElementById("home-tab").style.setProperty('color', 'white');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
+
+    if (document.getElementById("analytics-tab")) {
+      document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+      document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
+    }
+
+    
   }
 
   componentWillUnmount() {

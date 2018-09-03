@@ -60518,7 +60518,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         disabled: false
       };
       _this.logOut = _this.logOut.bind(_this);
-      _this.homeTabClicked = _this.homeTabClicked.bind(_this);
       _this.analyticsTabClicked = _this.analyticsTabClicked.bind(_this);
       return _this;
     }
@@ -60549,10 +60548,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             console.log("not logged in -app.js");
           }
         });
-
-        // upon refreshing page, the home tab is always selected
-        document.getElementById("home-tab").style.setProperty('color', 'white');
-        document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
       }
     }, {
       key: 'componentWillUnmount',
@@ -60576,26 +60571,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         });
       }
     }, {
-      key: 'homeTabClicked',
-      value: function homeTabClicked() {
-        // change UI to reflect home tab activated
-        document.getElementById("home-tab").style.setProperty('color', 'white');
-        document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
-
-        document.getElementById("analytics-tab").style.setProperty('color', 'gray');
-      }
-    }, {
       key: 'analyticsTabClicked',
       value: function analyticsTabClicked(e) {
         // don't go to analytics page if the user is not logged in
         if (this.state.disabled) {
           e.preventDefault();
-        } else {
-          // change UI to reflect analytics tab activated
-
-          document.getElementById("home-tab").style.setProperty('color', 'gray');
-          document.getElementById("analytics-tab").style.setProperty('color', 'white');
-          document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
         }
       }
     }, {
@@ -60617,9 +60597,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                 null,
                 _react2.default.createElement(
                   _reactRouterDom.NavLink,
-                  { id: 'home-tab', to: '/', onClick: function onClick(e) {
-                      return _this3.homeTabClicked();
-                    } },
+                  { id: 'home-tab', to: '/' },
                   'Home'
                 )
               ),
@@ -62768,7 +62746,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
       _this.generateChallenge = _this.generateChallenge.bind(_this);
       _this.completeChallenge = _this.completeChallenge.bind(_this);
-      // this.undoCompletion = this.undoCompletion.bind(this);
       return _this;
     }
 
@@ -62810,6 +62787,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         _nodeSchedule2.default.scheduleJob('0 0 * * *', function () {
           localStorage.clear();
         }); // run everyday at midnight
+
+        document.getElementById("home-tab").style.setProperty('color', 'white');
+        document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
+
+        if (document.getElementById("analytics-tab")) {
+          document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+          document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
+        }
       }
     }, {
       key: 'componentWillUnmount',
@@ -92328,6 +92313,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             _this2.props.history.push('/');
           }
         });
+
+        document.getElementById("home-tab").style.setProperty('color', 'gray');
+        document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
+
+        document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
+        document.getElementById("analytics-tab").style.setProperty('color', 'white');
       }
     }, {
       key: 'componentWillUnmount',

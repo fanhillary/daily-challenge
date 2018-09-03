@@ -44,6 +44,14 @@ class Analytics extends Component {
 
       }
     });
+
+    
+    document.getElementById("home-tab").style.setProperty('color', 'gray');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
+
+    document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
+    document.getElementById("analytics-tab").style.setProperty('color', 'white');
+
   }
 
   /*

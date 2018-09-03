@@ -14,7 +14,6 @@ class App extends Component {
       disabled: false,
     }
     this.logOut = this.logOut.bind(this);
-    this.homeTabClicked = this.homeTabClicked.bind(this);
     this.analyticsTabClicked = this.analyticsTabClicked.bind(this);
   }
 
@@ -39,10 +38,7 @@ class App extends Component {
         console.log("not logged in -app.js");
       }
     });
-
-    // upon refreshing page, the home tab is always selected
-    document.getElementById("home-tab").style.setProperty('color', 'white');
-    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
+    
   }
  
   /*
@@ -75,20 +71,6 @@ class App extends Component {
       console.log(error)
     });
   }
-
-  /*
-  * Function Name: homeTabClicked()
-  * Function Description: change UI to make home tab active.
-  * Parameters: None.
-  * Return: None.
-  */
-  homeTabClicked() {
-    // change UI to reflect home tab activated
-    document.getElementById("home-tab").style.setProperty('color', 'white');
-    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
-
-    document.getElementById("analytics-tab").style.setProperty('color', 'gray');
-  }
    
   /*
   * Function Name: analyticsTabClicked()
@@ -100,13 +82,6 @@ class App extends Component {
     // don't go to analytics page if the user is not logged in
     if(this.state.disabled) { 
       e.preventDefault()
-    } else {
-      // change UI to reflect analytics tab activated
-
-      document.getElementById("home-tab").style.setProperty('color', 'gray');
-      document.getElementById("analytics-tab").style.setProperty('color', 'white');
-      document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
-
     }
   }
 
@@ -115,7 +90,7 @@ class App extends Component {
       <HashRouter>
         <div className="App">
           <ul className="header">
-              <li><NavLink id="home-tab" to="/" onClick={(e) => this.homeTabClicked()}>Home</NavLink></li>
+              <li><NavLink id="home-tab" to="/">Home</NavLink></li>
               { this.state.user? 
                 <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
               : 
