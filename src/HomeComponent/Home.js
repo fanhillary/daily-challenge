@@ -18,7 +18,7 @@ var exerciseTarget = ["push-ups", "sit-ups", "squats"];
 var targets = ["your significant other", "your pet", "your sibling", "your mother", "your best friend", "your father", "your friend", "someone you haven't contacted in a long time", "a distant friend", "a random stranger", "the person to your left", "the person to your right", "the person across from you", "an elder", "someone younger than you"];
 var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
-var foodTarget = ["sugar", "potatos", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
+var foodTarget = ["sugar", "potatoes", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 
 
 const settings = {
@@ -76,6 +76,7 @@ class Home extends Component {
   componentWillUnmount() {
     this.fireBaseListener();
   }
+
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters
@@ -259,7 +260,12 @@ getRandomArbitrary(min, max) {
         <div>
          <h2> You've completed your daily task. </h2>
          <br></br>
-         <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
+         { this.state.user?
+          <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
+          :
+          <h3> You will receive a new challenge after midnight! Register to view your analytics! </h3>
+         }
+
         </div>
           :
           <div>

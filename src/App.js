@@ -18,7 +18,14 @@ class App extends Component {
     this.analyticsTabClicked = this.analyticsTabClicked.bind(this);
   }
 
+  /*
+  * Function Name: componentDidMount()
+  * Function Description: Check for authentication and set UI appropriately
+  * Parameters: None.
+  * Return: None.
+  */
   componentDidMount() {
+    // always check if logged in
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged in - app.js");
@@ -32,35 +39,70 @@ class App extends Component {
         console.log("not logged in -app.js");
       }
     });
+
+    // upon refreshing page, the home tab is always selected
     document.getElementById("home-tab").style.setProperty('color', 'white');
     document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
   }
  
+  /*
+  * Function Name: componentWillUnmount()
+  * Function Description: unmount the firebase listener to prevent memory leaks
+  * Parameters: None.
+  * Return: None.
+  */
   componentWillUnmount() {
+    // unmount the listener
     this.fireBaseListener();
   }
 
+  /*
+  * Function Name: logOut()
+  * Function Description: log user out of firebase and clear local storage
+  * Parameters: None.
+  * Return: None.
+  */
   logOut() {
     localStorage.clear();
+
+    // sign out the user
     auth.signOut().then(function() {
       this.setState({user: null});
+
+      // redirect to the home tab
       window.location.replace("https://daily-random-challenge.herokuapp.com/?#/");
     }).catch(function(error) {
       console.log(error)
     });
   }
 
+  /*
+  * Function Name: homeTabClicked()
+  * Function Description: change UI to make home tab active.
+  * Parameters: None.
+  * Return: None.
+  */
   homeTabClicked() {
+    // change UI to reflect home tab activated
     document.getElementById("home-tab").style.setProperty('color', 'white');
     document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
 
     document.getElementById("analytics-tab").style.setProperty('color', 'gray');
   }
-    
+   
+  /*
+  * Function Name: analyticsTabClicked()
+  * Function Description: change UI to make analytics tab active.
+  * Parameters: e - clicking event to prevent events default.
+  * Return: None.
+  */
   analyticsTabClicked(e){
-    if(this.state.disabled) {
+    // don't go to analytics page if the user is not logged in
+    if(this.state.disabled) { 
       e.preventDefault()
     } else {
+      // change UI to reflect analytics tab activated
+
       document.getElementById("home-tab").style.setProperty('color', 'gray');
       document.getElementById("analytics-tab").style.setProperty('color', 'white');
       document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
@@ -74,10 +116,13 @@ class App extends Component {
         <div className="App">
           <ul className="header">
               <li><NavLink id="home-tab" to="/" onClick={(e) => this.homeTabClicked()}>Home</NavLink></li>
-              <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
+              { this.state.user? 
+                <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
+              : 
+              null 
+              }
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
-          <span className="guest-hover-tip"> Log In or Register to view your challenge analytics! </span>
           <div className="content">
               <Route exact path="/" component={Home}/>
               <Route path="/analytics" component={Analytics}/>
