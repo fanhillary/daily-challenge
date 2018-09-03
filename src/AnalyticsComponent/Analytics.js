@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./Analytics.css";
-import firebase, { auth, db } from '../firebase.js';
+import { auth, db } from '../firebase.js';
 import { PieChart, Pie, ResponsiveContainer } from 'recharts';
 
 const settings = {

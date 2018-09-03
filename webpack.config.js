@@ -1,10 +1,6 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 module.exports = {
-  entry: './src/build/index.js',
-  output: { path: __dirname + '/src/build/', filename: 'bundle.js' },
+  entry: './public/index.js',
+  output: { path: __dirname + '/public', filename: 'bundle.js' },
   watch: true,
   module: {
     rules: [

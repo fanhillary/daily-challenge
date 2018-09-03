@@ -87,7 +87,7 @@ class Registration extends Component {
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-        if (error.message == "EMAIL_NOT_FOUND") {
+        if (error.message === "EMAIL_NOT_FOUND") {
             this.setState({warning: "Email was not found"});
         }
         console.log(errorCode);

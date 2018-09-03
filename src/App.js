@@ -4,7 +4,7 @@ import './App.css';
 import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
 import Registration from "./RegistrationComponent/Registration";
-import firebase, { auth } from './firebase.js';
+import { auth } from './firebase.js';
 
 class App extends Component {
   constructor(props) {

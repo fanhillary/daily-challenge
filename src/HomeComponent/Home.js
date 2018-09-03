@@ -1,10 +1,10 @@
 
 import React, { Component } from 'react';
 import './Home.css';
-import firebase, { auth, db } from '../firebase.js';
+import { auth, db } from '../firebase.js';
 import schedule from 'node-schedule';
 
-var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
+// var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
 var listAction = ["Drink a beer or two", "Sit silently", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom"];
 var listActionPre = ["Don't produce any waste today.", "Do one good deed.", "Do two good deeds.", "Do three good deeds.","Go to work 15 minutes early.", "Go to work 15 minutes late.", "Pet a random dog."];
 var listFood = ["Don't eat any", "Only eat"];
@@ -193,7 +193,7 @@ getRandomArbitrary(min, max) {
     document.body.style.setProperty('background-color', 'MediumSeaGreen');
     document.body.style.transition = "all 1s ease-out";
 
-    if(this.state.currentChallenge != "" && this.state.currentChallenge != null) {
+    if(this.state.currentChallenge !== "" && this.state.currentChallenge !== null) {
       if(this.state.user) {
         var docRef = db.collection("users").doc(this.state.user.email);
 
