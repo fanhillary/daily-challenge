@@ -43,6 +43,15 @@ class Registration extends Component {
             console.log("not logged in");
           }
     });
+
+    // change all tabs to gray out
+    document.getElementById("home-tab").style.setProperty('color', 'gray');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
+
+    if (document.getElementById("analytics-tab")) {
+      document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+      document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
+    }
   }
 
   /*

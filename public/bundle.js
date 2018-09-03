@@ -93049,6 +93049,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                         console.log("not logged in");
                     }
                 });
+
+                // change all tabs to gray out
+                document.getElementById("home-tab").style.setProperty('color', 'gray');
+                document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
+
+                if (document.getElementById("analytics-tab")) {
+                    document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+                    document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
+                }
             }
         }, {
             key: 'componentWillUnmount',
