@@ -19,7 +19,14 @@ class Analytics extends Component {
     };
   }
 
+  /*
+  * Function Name: componentWillMount()
+  * Function Description: Set up firebase listener for authentication checking
+  * Parameters: None.
+  * Return: None.
+  */
   componentWillMount() {
+    // check for authentication changes for firebase
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("logged in - analytics");
@@ -37,15 +44,31 @@ class Analytics extends Component {
     });
   }
 
+  /*
+  * Function Name: componentWillUnmount()
+  * Function Description: Unmount listener for firebase
+  * Parameters: None.
+  * Return: None.
+  */
   componentWillUnmount() {
     // cancel the listener
     this.fireBaseListener();
   }
 
+  /*
+  * Function Name: getCompletedChallenges()
+  * Function Description: Create random challenge upon loading of page.
+  * Parameters: None.
+  * Return: None.
+  */
   getCompletedChallenges() {
     var docRef = db.collection("users").doc(this.state.user.email);
+
     docRef.get().then((doc) => {
+      // get the data of completed challenges 
       var user_data = doc.data();
+
+      // get the total completed and get the most recent 10 challenges
       this.setState({ totalCompleted: user_data.completed_challenges.length });
       this.setState({ completed_challenges: user_data.completed_challenges.reverse().slice(0, 10)});
 
@@ -59,9 +82,12 @@ class Analytics extends Component {
         "Communication": 0
       };
 
+      // count each of the categories completed
       for (let i in completed_challenges) {
         categoriesCompleted[completed_challenges[i].type]++;
       }
+
+      // push into an array for more appropriate usage
       for (var category in categoriesCompleted) {
         this.state.categoryPieData.push({name: category, value: categoriesCompleted[category]});
       }

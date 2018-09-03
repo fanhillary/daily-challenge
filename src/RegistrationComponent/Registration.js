@@ -26,7 +26,14 @@ class Registration extends Component {
     this.loginUser = this.loginUser.bind(this);
   }
 
+  /*
+* Function Name: componentDidMount()
+* Function Description: check for authorization through firebase listener.
+* Parameters: None.
+* Return: None.
+*/
   componentDidMount() {
+    // use listener to check for user login
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
         if (user) {
             console.log("logged in");
@@ -38,15 +45,30 @@ class Registration extends Component {
     });
   }
 
+  /*
+    * Function Name: componentWillUnmount()
+    * Function Description: Unmount firebase listener
+    * Parameters: None.
+    * Return: None.
+    */
   componentWillUnmount() {
     this.fireBaseListener();
   }
+
+  /*
+    * Function Name: createNewUser()
+    * Function Description: Creates new user in fireabase 
+    * Parameters: None.
+    * Return: None.
+    */
   createNewUser() {
     var data = {
         name: this.state.name,
         email: this.state.email,
         password: this.state.password
     }
+
+    // create fireabase user with email and password
     firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
     .then(() => {
         var user = firebase.auth().currentUser;
@@ -59,8 +81,11 @@ class Registration extends Component {
             completed_challenges: [],
             duplicates: false
         })
+
+        // clear daily flag for new user
         localStorage.clear();
 
+        // redirect to home page
         this.props.history.push(`/`);
 
     }
@@ -72,18 +97,30 @@ class Registration extends Component {
       });
   }
 
+    /*
+    * Function Name: loginUser()
+    * Function Description: Login user in firebase 
+    * Parameters: None.
+    * Return: None.
+    */
   loginUser() {
     var data = {
         email: this.state.login_email,
         password: this.state.login_password
     }
     console.log("logging in");
+
+    //sign in the user with email and password via firebase
     firebase.auth().signInWithEmailAndPassword(data.email, data.password)
     .then((result) => {
         const user = result.user;
+
+        // set the state of the user, clear daily completion flag, redirect to home
         this.setState({ user: user });
         localStorage.clear();
         this.props.history.push(`/`);
+
+        // set error messages for login page
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -97,8 +134,6 @@ class Registration extends Component {
 
   render() {
     return (
-    // <Consumer> {
-    //     value =>
         <div className="container"> 
             {this.state.warning}
             <div className="row">
@@ -131,8 +166,6 @@ class Registration extends Component {
                 </div>
             </div>
         </div>
-    // }
-    // </Consumer>
       );
     }
 }
