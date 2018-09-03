@@ -14,7 +14,8 @@ class App extends Component {
       disabled: false,
     }
     this.logOut = this.logOut.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.homeTabClicked = this.homeTabClicked.bind(this);
+    this.analyticsTabClicked = this.analyticsTabClicked.bind(this);
   }
 
   componentDidMount() {
@@ -31,6 +32,8 @@ class App extends Component {
         console.log("not logged in -app.js");
       }
     });
+    document.getElementById("home-tab").style.setProperty('color', 'white');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
   }
  
   componentWillUnmount() {
@@ -47,8 +50,22 @@ class App extends Component {
     });
   }
 
-  handleClick(e){
-    if(this.state.disabled) e.preventDefault()
+  homeTabClicked() {
+    document.getElementById("home-tab").style.setProperty('color', 'white');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
+
+    document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+  }
+    
+  analyticsTabClicked(e){
+    if(this.state.disabled) {
+      e.preventDefault()
+    } else {
+      document.getElementById("home-tab").style.setProperty('color', 'gray');
+      document.getElementById("analytics-tab").style.setProperty('color', 'white');
+      document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
+
+    }
   }
 
   render() {
@@ -56,10 +73,11 @@ class App extends Component {
       <HashRouter>
         <div className="App">
           <ul className="header">
-              <li><NavLink to="/">Home</NavLink></li>
-              <li><NavLink onClick={(e) => this.handleClick(e)} to="/analytics">Analytics</NavLink></li>
+              <li><NavLink id="home-tab" to="/" onClick={(e) => this.homeTabClicked()}>Home</NavLink></li>
+              <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
+          <span className="guest-hover-tip"> Log In or Register to view your challenge analytics! </span>
           <div className="content">
               <Route exact path="/" component={Home}/>
               <Route path="/analytics" component={Analytics}/>
