@@ -93198,11 +93198,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
                                                 return _this5.setState({ login_password: event.target.value });
                                             }, 'aria-describedby': 'basic-addon1' }),
                                         _react2.default.createElement(
-                                            'a',
-                                            { href: '#', className: 'forgot-link' },
-                                            'Forgot Password?'
-                                        ),
-                                        _react2.default.createElement(
                                             'button',
                                             { type: 'submit', className: 'btn btn-primary' },
                                             'Login'

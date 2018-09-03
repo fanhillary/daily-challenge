@@ -79,7 +79,6 @@ class Home extends Component {
       document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
     }
 
-    
   }
 
   componentWillUnmount() {

@@ -158,7 +158,7 @@ class Registration extends Component {
                                 <p className="card-text">Log In to view analytics and change your settings!</p>
                                 <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.login_email} onChange = {(event) => this.setState({login_email: event.target.value})} aria-describedby="basic-addon1"></input>
                                 <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.login_password} onChange = {(event) => this.setState({login_password: event.target.value})} aria-describedby="basic-addon1"></input>
-                                <a href="#" className="forgot-link">Forgot Password?</a>
+                                {/* <a href="#" className="forgot-link">Forgot Password?</a> */}
                                 <button type="submit" className="btn btn-primary">Login</button>
                             </form>
                         </div>

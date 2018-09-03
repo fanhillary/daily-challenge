@@ -1,3 +1,5 @@
+/*global google*/
+
 import React, { Component } from 'react';
 import "./Analytics.css";
 import { auth, db } from '../firebase.js';
