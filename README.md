@@ -9,3 +9,4 @@ The analytics tab for registered users keeps track of the history of completed c
 
 <img width="1314" alt="screen shot 2018-09-02 at 8 47 03 pm" src="https://user-images.githubusercontent.com/15270809/44966808-43f13500-aef2-11e8-9e1e-80856c1c8246.png">
 
+<img width="1402" alt="screen shot 2018-09-15 at 3 41 51 pm" src="https://user-images.githubusercontent.com/15270809/45591134-0501ad00-b8fe-11e8-810b-050e54573153.png">
