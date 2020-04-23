@@ -4,6 +4,10 @@
    margin-bottom: 10px;
  }
  
+ .form-validation {
+  color: red;
+ }
+ 
  .card {
    width: 50%;
    display: flex;

@@ -11,6 +11,7 @@ class Registration extends Component {
         name: "",
         email: "",
         password: "",
+        confirmPassword: "",
         login_email: "",
         login_password: "",
         warning: "",
@@ -18,6 +19,8 @@ class Registration extends Component {
     }
     this.createNewUser = this.createNewUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
+    this.validatePassword = this.validatePassword.bind(this);
   }
 
   /*
@@ -58,6 +61,45 @@ class Registration extends Component {
     this.fireBaseListener();
   }
 
+
+  // Simple validation on given email param. Returns true if valid, else return false.
+  validateEmail(email) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) { return true }
+    return false
+  }
+
+  /*
+  * Description: Simple validation on given password. 
+  * 6-20 characters, one lowercase, one uppercase, one digit required.
+  * Returns true if valid, else return false.
+  */
+  validatePassword(password) {
+      if (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password)) { return true }
+      return false
+  }
+
+  /*
+  * Function name: validateRegistrationForm(data)
+  * Description: validates email, password, and whether passwords match. 
+  * Params: data - obj holding name, email, password, confirmpassword values for validation
+  * Return: true if all valid, false if invalid.
+  */
+  validateRegistrationForm(data) {
+    if (!this.validateEmail(data.email)) {
+      this.setState({warning: "The email you have entered is invalid. Please double-check!"});
+      return false
+    }
+    if (data.password != data.confirmPassword) {
+      this.setState({warning: "Your passwords do not match!"});
+      return false
+    }
+    if (!this.validatePassword(data.password)) {
+      this.setState({warning: "Your password must be 6-20 characters. Have at least one uppercase, one lowercase, and one digit."});
+      return false
+    }
+    return true
+  }
+
   /*
     * Function Name: createNewUser()
     * Function Description: Creates new user in fireabase 
@@ -68,10 +110,13 @@ class Registration extends Component {
     var data = {
         name: this.state.name,
         email: this.state.email,
-        password: this.state.password
+        password: this.state.password,
+        confirmPassword: this.state.confirmPassword
     }
 
-    // create fireabase user with email and password
+    if (!this.validateRegistrationForm(data)) { return }
+   
+    // create firebase user with email and password if validation is passed
     firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
     .then(() => {
         var user = firebase.auth().currentUser;
@@ -138,16 +183,17 @@ class Registration extends Component {
   render() {
     return (
         <div className="container"> 
-            {this.state.warning}
+            <p className="form-validation"> {this.state.warning}</p>
             <div className="row">
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">New to Daily Challenge?</h5>
-                        <p className="card-text">Register to use all features and keep track of the challenges you've completed!</p>
+                        <p className="card-text">Register to use keep track of the challenges you've completed!</p>
                         <form onSubmit={this.createNewUser}>
                             <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
                             <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
                             <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
+                            <input type="password" className="form-control register-input" placeholder="Confirm Password" aria-label="Confirm Password" value={this.state.confirmPassword} onChange = {(event) => this.setState({confirmPassword: event.target.value})} aria-describedby="basic-addon1"></input>
 
                             <button type="submit" className="btn btn-primary">Register</button>
                         </form>
