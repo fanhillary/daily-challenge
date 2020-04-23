@@ -13,6 +13,13 @@
   font-weight: bold;
 }
 
+/* for mobile screens */
+@media only screen and (max-width: 600px) {
+ .completeBtn {
+  width: 10rem;
+ }
+}
+
 .note {
   margin-top: 15rem
 }
