@@ -21,10 +21,10 @@ var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minut
 var foodTarget = ["sugar", "potatoes", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 
 
-const settings = {
-  timestampsInSnapshots: true
-};
-db.settings(settings);
+// const settings = {
+//   timestampsInSnapshots: true
+// };
+// db.settings(settings);
 
 class Home extends Component {
   constructor(props) {
@@ -256,8 +256,7 @@ getRandomArbitrary(min, max) {
               <h3> Your Challenge For Today</h3> 
               <h1> {this.state.currentChallenge} </h1>
               <p> Category: {this.state.category} </p>
-
-              <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll another challenge!</button>
+              <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll for another challenge!</button>
             </div>
 
             }
@@ -265,21 +264,20 @@ getRandomArbitrary(min, max) {
 
         
         { localStorage.getItem("flag_daily_complete") ?
-        <div>
-         <h2> You've completed your daily task. </h2>
-         <br></br>
-         { this.state.user?
-          <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
-          :
-          <h3> You will receive a new challenge after midnight! Register to view your analytics! </h3>
-         }
-
-        </div>
-          :
           <div>
-            <form className="form">
-              <div id="completionForm">
-                <div id="completionToggle" className="completionBtnGroup btn-group btn-group-toggle" data-toggle="buttons">
+            <h2> You've completed your daily task. </h2>
+            <br></br>
+            { this.state.user?
+              <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
+              :
+              <h3> You will receive a new challenge after midnight! Register to view your analytics! </h3>
+            }
+          </div>
+          :
+          <div className="form-container">
+            <form>
+              <div>
+                <div className="btn-group btn-group-toggle" data-toggle="buttons">
 
                   <label htmlFor="completeOption1" className="completeBtn btn btn-secondary active">
                     <input type="radio" name="completeOption1" id="incomplete" autoComplete="off" defaultChecked/> Incomplete
@@ -292,7 +290,9 @@ getRandomArbitrary(min, max) {
             </form>
           </div>
         }
-        <p className="warning-note"> Note: Only one challenge can be completed per day and it cannot be undone. </p>
+        <div className="note">
+          <p> Note: Only one challenge can be completed per day and it cannot be undone. </p>
+        </div>
       </div>
     );
   }

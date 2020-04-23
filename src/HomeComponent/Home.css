@@ -1,24 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
-#completionForm {
-  position: relative;
-  margin: 200px;
-}
 
-.completionButton {
-  background-color: #fff;
-  display: block;
-  width: 500px;
-  height: 100px;
-  border: 0px;
-  margin: 10;
-}
-
-.form {
-  max-width: 800px;
-  margin: auto;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
+.form-container {
+  padding: 5rem 0rem 5rem 0rem
 }
 
 .completeBtn {
@@ -30,13 +13,6 @@
   font-weight: bold;
 }
 
-.completionBtnGroup {
-  margin-left: -10%;
-}
-
-.warning-note {
-  position: absolute;
-  top: 95%;
-  left: 50%;
-  margin-left: -25%;
+.note {
+  margin-top: 15rem
 }

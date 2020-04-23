@@ -4,10 +4,10 @@ import './Registration.css';
 import firebase, {auth, db} from '../firebase.js';
 import { withRouter } from 'react-router'
 
-const settings = {
-    timestampsInSnapshots: true
-  };
-db.settings(settings);
+// const settings = {
+//     timestampsInSnapshots: true
+//   };
+// db.settings(settings);
 
 class Registration extends Component {
   constructor(props) {

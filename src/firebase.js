@@ -1,5 +1,6 @@
-var firebase = require("firebase");
-require("firebase/firestore");
+import firebase from 'firebase'
+// var firebase = require("firebase/auth");
+require("firebase/auth");
 
 var config = {
     apiKey: "AIzaSyAYSAWMfJdxW46ZTes2IRwN3kMP5WKoTy8",
