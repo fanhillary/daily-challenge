@@ -4,16 +4,10 @@ import './Registration.css';
 import firebase, {auth, db} from '../firebase.js';
 import { withRouter } from 'react-router'
 
-// const settings = {
-//     timestampsInSnapshots: true
-//   };
-// db.settings(settings);
-
 class Registration extends Component {
   constructor(props) {
     super(props);
     this.state ={
-        // TODO: Figure out how to not use separate state values for each input
         name: "",
         email: "",
         password: "",

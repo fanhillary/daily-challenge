@@ -7,11 +7,6 @@ import { auth, db } from '../firebase.js';
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
 
-// const settings = {
-//   timestampsInSnapshots: true
-// };
-// db.settings(settings);
-
 class Analytics extends Component {
   constructor(props) {
     super(props);

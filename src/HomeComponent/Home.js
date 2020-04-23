@@ -20,12 +20,6 @@ var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
 var foodTarget = ["sugar", "potatoes", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 
-
-// const settings = {
-//   timestampsInSnapshots: true
-// };
-// db.settings(settings);
-
 class Home extends Component {
   constructor(props) {
     super(props);
