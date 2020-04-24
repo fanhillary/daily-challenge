@@ -21,17 +21,17 @@
  .card {
   width: 400px;
  }
+ .register-input {
+  width: 85%;
+ }
 }
 
 .card-contents{
    margin: 5%;
  }
- 
- .forgot-link {
-   display: block;
-   margin: 10px;
- }
 
  .register-container {
-  display: inline-grid;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
  }

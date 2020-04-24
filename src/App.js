@@ -5,7 +5,6 @@ import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
 import Registration from "./RegistrationComponent/Registration";
 import { auth } from './firebase.js';
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -29,9 +28,9 @@ class App extends Component {
       if (user) {
         console.log(user)
         console.log("logged in - app.js");
+        localStorage.setItem("logged_on", true);
         this.setState({ user: user });
         this.setState({ disabled: false });
-
       } else {
         this.setState({ user: null });
         this.setState({ disabled: true });
@@ -62,12 +61,11 @@ class App extends Component {
   logOut() {
 
     // sign out the user
-    auth.signOut().then(function() {
-      this.setState({user: null});
-
-      // redirect to the home tab
-      window.location.replace("https://daily-random-challenge.herokuapp.com/?#/");
+    auth.signOut().then(() => {
       localStorage.clear();
+      this.setState({user: null});
+      this.props.history.push('/')
+
     }).catch(function(error) {
       console.log(error)
     });
@@ -81,8 +79,23 @@ class App extends Component {
   */
   analyticsTabClicked(e){
     // don't go to analytics page if the user is not logged in
+    document.getElementById("home-tab").style.setProperty('color', 'gray');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
+
+    document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
+    document.getElementById("analytics-tab").style.setProperty('color', 'white');
     if(this.state.disabled) { 
       e.preventDefault()
+    }
+  }
+
+  homeTabClicked(e) {
+    document.getElementById("home-tab").style.setProperty('color', 'white');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
+
+    if (document.getElementById("analytics-tab")) {
+      document.getElementById("analytics-tab").style.setProperty('color', 'gray');
+      document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
     }
   }
 
@@ -91,7 +104,7 @@ class App extends Component {
       <HashRouter>
         <div className="App">
           <ul className="header">
-              <li><NavLink id="home-tab" to="/">Home</NavLink></li>
+              <li><NavLink id="home-tab" to="/" onClick={(e) => this.homeTabClicked(e)}>Home</NavLink></li>
               { this.state.user? 
                 <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
               : 
@@ -100,8 +113,12 @@ class App extends Component {
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
           <div className="content">
-              <Route exact path="/" component={() => <Home user={this.state.user}/>}/>
-              <Route path="/analytics" component={Analytics}/>
+              <Route exact path="/">
+                <Home user={this.state.user} history={this.props.history}/>
+              </Route>
+              <Route path="/analytics">
+                <Analytics user={this.state.user} history={this.props.history}/>
+              </Route>
               <Route path="/register" component={Registration}/>
           </div>
         </div>
@@ -109,4 +126,6 @@ class App extends Component {
     );
   }
 }
+
+
 export default App;

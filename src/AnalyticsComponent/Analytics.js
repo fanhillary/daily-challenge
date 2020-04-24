@@ -1,8 +1,8 @@
 /*global google*/
-
+// important - above line is necessary for google chart
 import React, { Component } from 'react';
 import "./Analytics.css";
-import { auth, db } from '../firebase.js';
+import { db } from '../firebase.js';
 
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
@@ -11,7 +11,6 @@ class Analytics extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null,
       totalCompleted: 0,
       categoryPieData: [],
       completed_challenges: [],
@@ -20,57 +19,31 @@ class Analytics extends Component {
 
   /*
   * Function Name: componentWillMount()
-  * Function Description: Set up firebase listener for authentication checking
+  * Function Description: Check if logged_on is active in local storage. If not, route to home page. 
+  *                       If so, apply draw chart listeners and render page.
   * Parameters: None.
   * Return: None.
   */
-  componentWillMount() {
+  componentDidMount() {
     // check for authentication changes for firebase
-    this.fireBaseListener = auth.onAuthStateChanged((user) => {
-      if (user) {
-        console.log("logged in - analytics");
-        this.setState({ user: user });
-        console.log(this.state.user);
-        this.getCompletedChallenges();
-      } else {
-
-        // autodirect to home tab if guest user.
-        this.setState({ user: null });
-        console.log("not logged in - analytics");
-        this.props.history.push(`/`);
-
-      }
-    });
-
-    
-    document.getElementById("home-tab").style.setProperty('color', 'gray');
-    document.getElementById("home-tab").style.setProperty('font-weight', 'normal');
-
-    document.getElementById("analytics-tab").style.setProperty('font-weight', 'bold');
-    document.getElementById("analytics-tab").style.setProperty('color', 'white');
-
+    console.log(localStorage.getItem("logged_on"));
+    if (!localStorage.getItem("logged_on")) {
+      this.props.history.push('/');
+    }
+    if (this.props.user) { 
+      this.getCompletedChallenges(this.props.user);
+      window.onload = this.drawChart;
+      window.onresize = this.drawChart;
+    }
   }
-
-  /*
-  * Function Name: componentWillUnmount()
-  * Function Description: Unmount listener for firebase
-  * Parameters: None.
-  * Return: None.
-  */
-  componentWillUnmount() {
-    // cancel the listener
-    this.fireBaseListener();
-  }
-
   /*
   * Function Name: getCompletedChallenges()
   * Function Description: Create random challenge upon loading of page.
   * Parameters: None.
   * Return: None.
   */
-  getCompletedChallenges() {
-    var docRef = db.collection("users").doc(this.state.user.email);
-
+  getCompletedChallenges(user) {
+    var docRef = db.collection("users").doc(user.email);
     docRef.get().then((doc) => {
       // get the data of completed challenges 
       var user_data = doc.data();
@@ -98,21 +71,32 @@ class Analytics extends Component {
       for (var category in categoriesCompleted) {
         this.state.categoryPieData.push([category, categoriesCompleted[category]]);
       }
+      localStorage.setItem("categoryPieData", JSON.stringify(this.state.categoryPieData))
+      this.drawChart()
+    })
+  }
 
-      // create google pie chart with categories data
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', "Category");
-      data.addColumn('number', "Count");
-      data.addRows(this.state.categoryPieData);
-      var options = {
-      width:450,
-      height:350,
-      is3D: true
-     };
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-
-      })
+/*
+* Draw google pie chart using categoryPieData in local storage.
+* Remove the element before every draw to avoid drawing over itself.
+* Called on resize and load of window to adjust chart size
+*/
+  drawChart() {
+     // create google pie chart with categories data
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', "Category");
+    data.addColumn('number', "Count");
+    data.addRows(JSON.parse(localStorage.getItem("categoryPieData")));
+    var options = {
+      is3D: true, 
+      legend :"bottom"
+    };
+    var div = document.getElementById("chart_div");
+    while (div != null && div.firstChild) {
+      div.removeChild(div.firstChild);
+    }
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
   }
 
   render() {
@@ -122,7 +106,7 @@ class Analytics extends Component {
         <div className ="row">
           <div className="card bg-light mb-3" id="total-card">
             <div className="card-body">
-                <h5 className="card-title">You've conquered a total of</h5>
+                <h5 className="card-title">You've completed a total of</h5>
                 <p className="card-text total-completed-challenges">{this.state.totalCompleted}</p>
                 <p className="card-text">challenges</p>
             </div>

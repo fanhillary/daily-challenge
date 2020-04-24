@@ -129,18 +129,13 @@ class Registration extends Component {
             duplicates: false
         })
         this.setState({ user: user });
+
         // clear daily flag for new user
         localStorage.clear();
+        localStorage.setItem( 'logged_on', true );
 
         // redirect to home page
         this.props.history.push(`/`);
-        // this.props.history.push({
-        //      pathname:"/",
-        //      state:{
-        //          user:this.state.user
-        //       }
-        //     });
-
     }
     ).catch(function(error) {
         var errorCode = error.code;
@@ -171,14 +166,9 @@ class Registration extends Component {
         // set the state of the user, clear daily completion flag, redirect to home
         this.setState({ user: user });
         localStorage.clear();
+        localStorage.setItem( 'logged_on', true );
+
         this.props.history.push(`/`);
-        // this.props.history.push({
-        //      pathname:"/",
-        //      state:{
-        //          user:this.state.user
-        //       }
-        //     });
-        // set error messages for login page
     }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;

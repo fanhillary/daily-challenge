@@ -26,14 +26,14 @@ class Home extends Component {
     this.state = {
       currentChallenge: "",
       category: "",
-      completedChallenges: [],
+      completed: false,
     };
   
-    if (this.props.location != null) {
-      this.props.user = this.props.location.state.user;
-      console.log("from location props...")
-      console.log(this.props.user)
-    }
+    // if (this.props.location != null) {
+    //   this.props.user = this.props.location.state.user;
+    //   console.log("from location props...")
+    //   console.log(this.props.user)
+    // }
     this.generateChallenge = this.generateChallenge.bind(this);
     this.completeChallenge = this.completeChallenge.bind(this);
   }
@@ -45,27 +45,20 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
-    console.log(this.props.user);
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
+    document.getElementById("home-tab").style.setProperty('color', 'white');
+    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
 
     // if user has already completed a challenge today, display appropriate message
     if (localStorage.getItem("flag_daily_complete")) {
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
     } else {
+      console.log("generating...")
       this.generateChallenge();
     }
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
-  
-    document.getElementById("home-tab").style.setProperty('color', 'white');
-    document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
-
-    if (document.getElementById("analytics-tab")) {
-      document.getElementById("analytics-tab").style.setProperty('color', 'gray');
-      document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
-    }
-
   }
 
 /*
@@ -92,7 +85,6 @@ getRandomArbitrary(min, max) {
     var randomVerb = "";
     var randomConjunction = "";
     var randomEnd = "";
-
     // choose a random action array to select from
     var selectedCategory = this.getRandomArbitrary(0,4);
      // Action Category
@@ -168,8 +160,17 @@ getRandomArbitrary(min, max) {
         this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
       }
       this.setState({category: "Exercise"});
-
     }
+    // console.log(this.state.currentChallenge)
+    // if (this.state.currentChallenge !== "") {
+    //   const challengeDetails = {
+    //     "currentChallenge": this.state.currentChallenge,
+    //     "category": this.state.category,
+    //   }
+    //   console.log("challengedetails")
+    //   console.log(challengeDetails)
+    //   localStorage.setItem("prompt", JSON.stringify(challengeDetails));
+    // }
   }
   
 /*
@@ -191,7 +192,7 @@ getRandomArbitrary(min, max) {
 
         docRef.get().then((doc) => {
           if (doc.exists) { // if user exists
-            // obtain current copmleted challenges from firestore
+            // obtain current completed challenges from firestore
             var user_data = doc.data();
             let new_data = {
               challenges: this.state.currentChallenge,
@@ -225,7 +226,7 @@ getRandomArbitrary(min, max) {
         console.log("guest user")
       }
       localStorage.setItem( 'flag_daily_complete', true );
-      this.props.history.push(`/`);
+      this.setState({completed: true});
     }
   }
 
@@ -235,8 +236,8 @@ getRandomArbitrary(min, max) {
         <div>
             { this.props.user? <h2> Hi {this.props.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
             { localStorage.getItem("flag_daily_complete") ? <h1> Congratulations! </h1> :
-            <div> 
-              <h3> Your Challenge For Today</h3> 
+            <div className="prompt"> 
+              <h3> Today's Challenge:</h3> 
               <h1> {this.state.currentChallenge} </h1>
               <p> Category: {this.state.category} </p>
               <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll for another challenge!</button>
