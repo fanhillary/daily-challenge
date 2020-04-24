@@ -6,6 +6,7 @@
  
  .form-validation {
   color: red;
+  display: block;
  }
  
  .card {

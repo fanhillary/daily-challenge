@@ -53,7 +53,6 @@ class Analytics extends Component {
       // get the total completed and get the most recent 10 challenges
       this.setState({ totalCompleted: user_data.completed_challenges.length });
       this.setState({ completed_challenges: user_data.completed_challenges.reverse().slice(0, 10)});
-
       // calculate pie chart category count
       var completed_challenges = user_data.completed_challenges;
       var categoriesCompleted = {
@@ -136,7 +135,8 @@ class Analytics extends Component {
                       :
                       <div>
                         { this.state.completed_challenges.map(function(challenge, i) {
-                          return <p className="challenge-history" key={i}> {challenge.date_completed.toDate().getMonth()}/{challenge.date_completed.toDate().getDate()}/{challenge.date_completed.toDate().getFullYear()}  {challenge.challenges} </p>
+                          let date = challenge.date_completed.toDate();
+                          return <p className="challenge-history" key={i}> {date.getMonth()+1}/{date.getDate()}/{date.getFullYear()}  {challenge.challenges} </p>
                         })}
                       </div>          
                     }      

@@ -3,22 +3,22 @@ import React, { Component } from 'react';
 import './Home.css';
 import { db } from '../firebase.js';
 import schedule from 'node-schedule';
+import { withRouter } from 'react-router';
 
 // var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
-var listAction = ["Drink a beer or two", "Sit silently", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom"];
+var listAction = ["Drink a beer or two", "Sit silently", "Do a good deed", "Be kind", "High five", "Sneak into the opposite gender restroom", "Do a silly dance", "Go outside", "Go out tonight"];
 var listActionPre = ["Don't produce any waste today.", "Do one good deed.", "Do two good deeds.", "Do three good deeds.","Go to work 15 minutes early.", "Go to work 15 minutes late.", "Pet a random dog."];
-var listFood = ["Don't eat any", "Only eat"];
-var listFoodPre = ["Try a new fruit.", "Try a new drink.", "Try a new cuisine."];
-var listFinance = ["Spend a maximum of", "Spend a minimum of"];
+var listFood = ["Don't eat any", "Only eat", "Try a new"];
+var listFinance = ["Spend a maximum of", "Spend a minimum of", "Save a total of"];
 var financeTarget = ["50 cents", "$1", "$5", "$10", "$50", "$100"];
 var listCommunication = ["Talk to", "Spend an hour with", "Spend 30 minutes with", "Spend a day with", "Visit"]
-var listExercise = ["Run", "Walk", "Jog"];
-var listExerciseNoConj = ["Do 10", "Do 50", "Do 100"];
-var exerciseTarget = ["push-ups", "sit-ups", "squats"];
+var listExercise = ["Run", "Walk", "Jog", "Climb", "Skip"];
+var listExerciseNoConj = ["Do 10", "Do 25", "Do 50", "Do 75", "Do 100"];
+var exerciseTarget = ["push-ups", "sit-ups", "squats", "jumping jacks", "burpees", "high knees", "stretches"];
 var targets = ["your significant other", "your pet", "your sibling", "your mother", "your best friend", "your father", "your friend", "someone you haven't contacted in a long time", "a distant friend", "a random stranger", "the person to your left", "the person to your right", "the person across from you", "an elder", "someone younger than you"];
 var listConjunction = ["for", "with"];
 var duration = ["5 minutes", "10 minutes", "15 minutes", "30 minutes", "45 minutes", "an hour", "two hours", "half a day", "the whole day"];
-var foodTarget = ["sugar", "potatoes", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
+var foodTarget = ["sugar", "potatoes", "bananas", "fruit", "bread", "candy", "gluten", "meat", "Chinese food", "American food", "Thai food", "Vietnamese food", "Asian food", "European food", "Italian food", "French food", "Korean food", "Mexican food", "Indian food", "Malaysian food", "Filipino food"];
 
 class Home extends Component {
   constructor(props) {
@@ -49,6 +49,7 @@ class Home extends Component {
       this.setState({user: userObj});
       this.setState({displayName: userObj.displayName});
     }
+    console.log(this.state.displayName)
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
     document.getElementById("home-tab").style.setProperty('color', 'white');
@@ -75,10 +76,20 @@ componentWillReceiveProps(nextProps) {
     this.setState({displayName: nextProps.user.displayName});
   } else {
       this.setState({user: null});
-
       this.setState({displayName: null});
   }
 }
+
+
+componentDidUpdate(nextProps) {
+  console.log(this.props);
+  console.log(nextProps);
+  if (this.props.user !== nextProps.user) {
+    console.log("updating prop");
+    this.setState({user: nextProps.user});
+  }
+}
+
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters
@@ -130,16 +141,9 @@ getRandomArbitrary(min, max) {
 
       // Food Category
     } else if (selectedCategory === 1) { 
-      var foodType = this.getRandomArbitrary(0,1);
-
-      if (foodType === 0) {
-        randomVerb= listFood[Math.floor(Math.random()*listFood.length)];
-        randomEnd = foodTarget[Math.floor(Math.random()*foodTarget.length)];
-        this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
-      } else {
-        this.setState({currentChallenge: listFoodPre[Math.floor(Math.random()*listFoodPre.length)]});
-      }
-
+      randomVerb= listFood[Math.floor(Math.random()*listFood.length)];
+      randomEnd = foodTarget[Math.floor(Math.random()*foodTarget.length)];
+      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
       this.setState({category: "Food"});
 
 
@@ -299,5 +303,5 @@ getRandomArbitrary(min, max) {
     );
   }
 }
-export default Home;
+export default withRouter(Home);
 
