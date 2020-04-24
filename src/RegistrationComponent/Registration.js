@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import './Registration.css';
-import firebase, {auth, db} from '../firebase.js';
-import { withRouter } from 'react-router'
+import firebase, { auth, db } from '../firebase.js';
+import { withRouter } from 'react-router';
 
 class Registration extends Component {
   constructor(props) {
     super(props);
     this.state ={
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        login_email: "",
-        login_password: "",
-        warning: "",
-        user: null,
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        login_email: '',
+        login_password: '',
+        warning: '',
     }
     this.createNewUser = this.createNewUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
@@ -29,15 +28,16 @@ class Registration extends Component {
 * Return: None.
 */
   componentDidMount() {
+    console.log("registration mounted");
     // use listener to check for user login
-    this.fireBaseListener = auth.onAuthStateChanged((user) => {
-        if (user) {
-            console.log("logged in");
-            this.props.history.push(`/`)
-          } else {
-            this.setState({ user: null });
-            console.log("not logged in");
-          }
+     this.fireBaseListener = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("logged on!!!");
+        // localStorage.clear();
+        // localStorage.setItem("logged_on", true);
+        // localStorage.setItem("user", JSON.stringify(user));
+        this.props.history.push('/');
+      } 
     });
 
     // change all tabs to gray out
@@ -83,14 +83,20 @@ class Registration extends Component {
   * Params: data - obj holding name, email, password, confirmpassword values for validation
   * Return: true if all valid, false if invalid.
   */
-  validateRegistrationForm(data) {
+  validateForms(data, ifRegistration) {
     if (!this.validateEmail(data.email)) {
       this.setState({warning: "The email you have entered is invalid. Please double-check!"});
       return false
     }
-    if (data.password !== data.confirmPassword) {
-      this.setState({warning: "Your passwords do not match!"});
-      return false
+    if (ifRegistration) {
+      if (data.name == "") {
+        this.setState({warning: "Please enter a display name."});
+        return false
+      }
+      if (data.password !== data.confirmPassword) {
+        this.setState({warning: "Your passwords do not match!"});
+        return false
+      }
     }
     if (!this.validatePassword(data.password)) {
       this.setState({warning: "Your password must be 6-20 characters. Have at least one uppercase, one lowercase, and one digit."});
@@ -98,14 +104,14 @@ class Registration extends Component {
     }
     return true
   }
-
   /*
     * Function Name: createNewUser()
     * Function Description: Creates new user in fireabase 
     * Parameters: None.
     * Return: None.
     */
-  createNewUser() {
+  createNewUser(e) {
+    e.preventDefault()
     var data = {
         name: this.state.name,
         email: this.state.email,
@@ -113,11 +119,12 @@ class Registration extends Component {
         confirmPassword: this.state.confirmPassword
     }
 
-    if (!this.validateRegistrationForm(data)) { return }
+    if (!this.validateForms(data, true)) { return }
    
     // create firebase user with email and password if validation is passed
     firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
     .then(() => {
+        console.log("registering...")
         var user = firebase.auth().currentUser;
         user.updateProfile({
             displayName: data.name,    
@@ -128,14 +135,7 @@ class Registration extends Component {
             completed_challenges: [],
             duplicates: false
         })
-        this.setState({ user: user });
 
-        // clear daily flag for new user
-        localStorage.clear();
-        localStorage.setItem( 'logged_on', true );
-
-        // redirect to home page
-        this.props.history.push(`/`);
     }
     ).catch(function(error) {
         var errorCode = error.code;
@@ -144,39 +144,29 @@ class Registration extends Component {
         console.log(errorMessage);
       });
   }
-
+ 
     /*
     * Function Name: loginUser()
     * Function Description: Login user in firebase 
     * Parameters: None.
     * Return: None.
     */
-  loginUser() {
+  loginUser(e) {
+    e.preventDefault()
     var data = {
         email: this.state.login_email,
         password: this.state.login_password
     }
-    console.log("logging in");
-
+    if (!this.validateForms(data, false)) { return }
     //sign in the user with email and password via firebase
     firebase.auth().signInWithEmailAndPassword(data.email, data.password)
     .then((result) => {
-        const user = result.user;
-
-        // set the state of the user, clear daily completion flag, redirect to home
-        this.setState({ user: user });
-        localStorage.clear();
-        localStorage.setItem( 'logged_on', true );
-
-        this.props.history.push(`/`);
-    }).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (error.message === "EMAIL_NOT_FOUND") {
-            this.setState({warning: "Email was not found"});
-        }
-        console.log(errorCode);
-        console.log(errorMessage);
+        console.log("checking login credentials...");
+        
+    }).catch((error) => {
+        this.setState({warning: "Either your email or password login is incorrect."});
+        console.log(error.code);
+        console.log(error.message);
     });
 }
 
@@ -189,7 +179,7 @@ class Registration extends Component {
                     <div className="card-contents">
                       <h5 className="card-title">New to Daily Challenge?</h5>
                       <p className="card-text">Register to keep track of the challenges you've completed!</p>
-                      <form onSubmit={this.createNewUser}>
+                      <form onSubmit={(e) => this.createNewUser(e)}>
                           <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
                           <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
                           <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
@@ -203,7 +193,7 @@ class Registration extends Component {
             <div className="card">
                 <div className="card-body">
                     <div className="card-contents">
-                        <form onSubmit={this.loginUser}>
+                        <form onSubmit={(e) => this.loginUser(e)}>
                             <h5 className="card-title">Returning User?</h5>
                             <p className="card-text">Log In to view analytics and change your settings!</p>
                             <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.login_email} onChange = {(event) => this.setState({login_email: event.target.value})} aria-describedby="basic-addon1"></input>

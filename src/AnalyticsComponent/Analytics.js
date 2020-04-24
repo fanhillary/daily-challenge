@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import "./Analytics.css";
 import { db } from '../firebase.js';
+import { withRouter } from 'react-router';
 
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
@@ -18,20 +19,21 @@ class Analytics extends Component {
   }
 
   /*
-  * Function Name: componentWillMount()
+  * Function Name: componentDidMount()
   * Function Description: Check if logged_on is active in local storage. If not, route to home page. 
   *                       If so, apply draw chart listeners and render page.
   * Parameters: None.
   * Return: None.
   */
   componentDidMount() {
-    // check for authentication changes for firebase
-    console.log(localStorage.getItem("logged_on"));
+    console.log(this.state.completed_challenges);
+    // if not logged on, redirect to home.
     if (!localStorage.getItem("logged_on")) {
       this.props.history.push('/');
     }
-    if (this.props.user) { 
-      this.getCompletedChallenges(this.props.user);
+    console.log(localStorage);
+    if (localStorage.getItem("user")) { 
+      this.getCompletedChallenges(JSON.parse(localStorage.getItem("user")));
       window.onload = this.drawChart;
       window.onresize = this.drawChart;
     }
@@ -117,7 +119,11 @@ class Analytics extends Component {
             <div className="analytics-card">
               <div className="card-body">
                   <h5 className="card-title">Categories Completed</h5>
-                  <div id="chart_div"></div>
+                  {this.state.totalCompleted == 0 ? 
+                    "None Completed"
+                    :
+                    <div id="chart_div"></div>
+                  }
                 </div>
             </div>
           </div>
@@ -125,9 +131,15 @@ class Analytics extends Component {
             <div className="analytics-card">
                 <div className="card-body">
                     <h5 className="card-title">History of Completed</h5>
-                      {this.state.completed_challenges.map(function(challenge, i) {
-                        return <p className="challenge-history" key={i}> {challenge.date_completed.toDate().getMonth()}/{challenge.date_completed.toDate().getDate()}/{challenge.date_completed.toDate().getFullYear()}  {challenge.challenges} </p>
-                      })}                
+                    {this.state.totalCompleted == 0 ? 
+                      "None Completed"
+                      :
+                      <div>
+                        { this.state.completed_challenges.map(function(challenge, i) {
+                          return <p className="challenge-history" key={i}> {challenge.date_completed.toDate().getMonth()}/{challenge.date_completed.toDate().getDate()}/{challenge.date_completed.toDate().getFullYear()}  {challenge.challenges} </p>
+                        })}
+                      </div>          
+                    }      
                 </div>
             </div>
           </div>
@@ -138,4 +150,4 @@ class Analytics extends Component {
   }
 }
 
-export default Analytics;
+export default withRouter(Analytics);

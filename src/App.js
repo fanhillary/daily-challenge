@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, NavLink, HashRouter} from "react-router-dom";
+import { Route, NavLink, Switch, Link, withRouter} from "react-router-dom";
 import './App.css';
 import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
@@ -14,6 +14,7 @@ class App extends Component {
     }
     this.logOut = this.logOut.bind(this);
     this.analyticsTabClicked = this.analyticsTabClicked.bind(this);
+    this.homeTabClicked = this.homeTabClicked.bind(this);
   }
 
   /*
@@ -23,19 +24,21 @@ class App extends Component {
   * Return: None.
   */
   componentDidMount() {
+    console.log(this.props);
+    console.log(localStorage);
     // always check if logged in
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log(user)
-        console.log("logged in - app.js");
+        console.log(user);
+        localStorage.clear();
         localStorage.setItem("logged_on", true);
+        localStorage.setItem("user", JSON.stringify(user));
         this.setState({ user: user });
         this.setState({ disabled: false });
       } else {
+        localStorage.clear();
         this.setState({ user: null });
         this.setState({ disabled: true });
-
-        console.log("not logged in -app.js");
       }
     });
     
@@ -59,13 +62,12 @@ class App extends Component {
   * Return: None.
   */
   logOut() {
-
+    console.log("logging out");
     // sign out the user
     auth.signOut().then(() => {
       localStorage.clear();
       this.setState({user: null});
-      this.props.history.push('/')
-
+      this.props.history.push('/');
     }).catch(function(error) {
       console.log(error)
     });
@@ -89,6 +91,12 @@ class App extends Component {
     }
   }
 
+  /*
+  * Function Name: homeTabClicked()
+  * Function Description: change UI to make Home tab active.
+  * Parameters: e - clicking event to prevent events default.
+  * Return: None.
+  */
   homeTabClicked(e) {
     document.getElementById("home-tab").style.setProperty('color', 'white');
     document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
@@ -101,31 +109,29 @@ class App extends Component {
 
   render() {
     return (
-      <HashRouter>
         <div className="App">
           <ul className="header">
-              <li><NavLink id="home-tab" to="/" onClick={(e) => this.homeTabClicked(e)}>Home</NavLink></li>
+              <li><Link id="home-tab" to="/" onClick={(e) => this.homeTabClicked(e)}>Home</Link></li>
               { this.state.user? 
-                <li><NavLink id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</NavLink></li>
+                <li><Link id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</Link></li>
               : 
               null 
               }
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
-          <div className="content">
-              <Route exact path="/">
-                <Home user={this.state.user} history={this.props.history}/>
-              </Route>
-              <Route path="/analytics">
-                <Analytics user={this.state.user} history={this.props.history}/>
-              </Route>
-              <Route path="/register" component={Registration}/>
-          </div>
+          <Switch>
+            <Route exact path="/">
+              <Home user={this.state.user}/>
+            </Route>
+            <Route path="/analytics">
+              <Analytics user={this.state.user}/>
+            </Route>
+            <Route path="/register" component={Registration}/>
+          </Switch>
         </div>
-      </HashRouter>
     );
   }
 }
 
 
-export default App;
+export default withRouter(App);

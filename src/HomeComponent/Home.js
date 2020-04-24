@@ -27,13 +27,9 @@ class Home extends Component {
       currentChallenge: "",
       category: "",
       completed: false,
+      user: null,
     };
   
-    // if (this.props.location != null) {
-    //   this.props.user = this.props.location.state.user;
-    //   console.log("from location props...")
-    //   console.log(this.props.user)
-    // }
     this.generateChallenge = this.generateChallenge.bind(this);
     this.completeChallenge = this.completeChallenge.bind(this);
   }
@@ -45,6 +41,10 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
+    console.log(localStorage);
+    if (localStorage.getItem("user")) {
+      this.setState({user: JSON.parse(localStorage.getItem("user"))});
+    }
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
     document.getElementById("home-tab").style.setProperty('color', 'white');
@@ -55,12 +55,15 @@ class Home extends Component {
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
     } else {
-      console.log("generating...")
       this.generateChallenge();
     }
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
   }
 
+componentWillReceiveProps(nextProps) {
+  console.log(nextProps)
+  this.setState({ user: nextProps.user});  
+}
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters
@@ -234,7 +237,7 @@ getRandomArbitrary(min, max) {
     return (
       <div>
         <div>
-            { this.props.user? <h2> Hi {this.props.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
+            { this.state.user ? <h2> Hi {this.state.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
             { localStorage.getItem("flag_daily_complete") ? <h1> Congratulations! </h1> :
             <div className="prompt"> 
               <h3> Today's Challenge:</h3> 
