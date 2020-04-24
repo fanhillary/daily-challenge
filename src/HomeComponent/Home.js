@@ -262,7 +262,7 @@ getRandomArbitrary(min, max) {
             { localStorage.getItem("flag_daily_complete") === "true" ? <h1> Congratulations! </h1> :
             <div className="prompt"> 
               <h3> Today's Challenge:</h3> 
-              <h1> {this.state.currentChallenge} </h1>
+              <h1 className="challenge"> {this.state.currentChallenge} </h1>
               <p> Category: {this.state.category} </p>
               <button type="button" id="refreshChallenge" onClick={this.generateChallenge} className="btn btn-light">Reroll for another challenge!</button>
             </div>
