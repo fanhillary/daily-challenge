@@ -9,17 +9,29 @@
  }
  
  .card {
-   width: 50%;
+   width: 500px;
    display: flex;
    flex-direction: row;
    justify-content: space-around;
  }
  
- .card-contents{
-   margin-top: 5%;
+
+/* for mobile screens */
+@media only screen and (max-width: 600px) {
+ .card {
+  width: 400px;
+ }
+}
+
+.card-contents{
+   margin: 5%;
  }
  
  .forgot-link {
    display: block;
    margin: 10px;
+ }
+
+ .register-container {
+  display: inline-grid;
  }

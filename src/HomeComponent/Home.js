@@ -29,6 +29,11 @@ class Home extends Component {
       completedChallenges: [],
     };
   
+    if (this.props.location != null) {
+      this.props.user = this.props.location.state.user;
+      console.log("from location props...")
+      console.log(this.props.user)
+    }
     this.generateChallenge = this.generateChallenge.bind(this);
     this.completeChallenge = this.completeChallenge.bind(this);
   }
@@ -40,6 +45,7 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
+    console.log(this.props.user);
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
 
@@ -241,13 +247,13 @@ getRandomArbitrary(min, max) {
 
         
         { localStorage.getItem("flag_daily_complete") ?
-          <div>
+          <div className="form-container">
             <h2> You've completed your daily task. </h2>
             <br></br>
             { this.props.user?
-              <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
+              <h4> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h4>
               :
-              <h3> You will receive a new challenge after midnight! Register to view your analytics! </h3>
+              <h4> You will receive a new challenge after midnight! Register to view your analytics! </h4>
             }
           </div>
           :

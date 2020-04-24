@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Registration.css';
-// const {Provider, Consumer} = AuthenticationContext;
 import firebase, {auth, db} from '../firebase.js';
 import { withRouter } from 'react-router'
 
@@ -89,7 +88,7 @@ class Registration extends Component {
       this.setState({warning: "The email you have entered is invalid. Please double-check!"});
       return false
     }
-    if (data.password != data.confirmPassword) {
+    if (data.password !== data.confirmPassword) {
       this.setState({warning: "Your passwords do not match!"});
       return false
     }
@@ -129,12 +128,18 @@ class Registration extends Component {
             completed_challenges: [],
             duplicates: false
         })
-
+        this.setState({ user: user });
         // clear daily flag for new user
         localStorage.clear();
 
         // redirect to home page
         this.props.history.push(`/`);
+        // this.props.history.push({
+        //      pathname:"/",
+        //      state:{
+        //          user:this.state.user
+        //       }
+        //     });
 
     }
     ).catch(function(error) {
@@ -167,7 +172,12 @@ class Registration extends Component {
         this.setState({ user: user });
         localStorage.clear();
         this.props.history.push(`/`);
-
+        // this.props.history.push({
+        //      pathname:"/",
+        //      state:{
+        //          user:this.state.user
+        //       }
+        //     });
         // set error messages for login page
     }).catch(function(error) {
         var errorCode = error.code;
@@ -182,35 +192,35 @@ class Registration extends Component {
 
   render() {
     return (
-        <div className="container"> 
+        <div className="register-container"> 
             <p className="form-validation"> {this.state.warning}</p>
-            <div className="row">
-                <div className="card">
-                    <div className="card-body">
-                        <h5 className="card-title">New to Daily Challenge?</h5>
-                        <p className="card-text">Register to keep track of the challenges you've completed!</p>
-                        <form onSubmit={this.createNewUser}>
-                            <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
-                            <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
-                            <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
-                            <input type="password" className="form-control register-input" placeholder="Confirm Password" aria-label="Confirm Password" value={this.state.confirmPassword} onChange = {(event) => this.setState({confirmPassword: event.target.value})} aria-describedby="basic-addon1"></input>
+            <div className="card">
+                <div className="card-body">
+                    <div className="card-contents">
+                      <h5 className="card-title">New to Daily Challenge?</h5>
+                      <p className="card-text">Register to keep track of the challenges you've completed!</p>
+                      <form onSubmit={this.createNewUser}>
+                          <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
+                          <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>
+                          <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.password} onChange = {(event) => this.setState({password: event.target.value})} aria-describedby="basic-addon1"></input>
+                          <input type="password" className="form-control register-input" placeholder="Confirm Password" aria-label="Confirm Password" value={this.state.confirmPassword} onChange = {(event) => this.setState({confirmPassword: event.target.value})} aria-describedby="basic-addon1"></input>
 
-                            <button type="submit" className="btn btn-primary">Register</button>
-                        </form>
-                    </div>
+                          <button type="submit" className="btn btn-primary">Register</button>
+                      </form>
+                  </div>
                 </div>
-                <div className="card">
-                    <div className="card-body">
-                        <div className="card-contents">
-                            <form onSubmit={this.loginUser}>
-                                <h5 className="card-title">Returning User?</h5>
-                                <p className="card-text">Log In to view analytics and change your settings!</p>
-                                <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.login_email} onChange = {(event) => this.setState({login_email: event.target.value})} aria-describedby="basic-addon1"></input>
-                                <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.login_password} onChange = {(event) => this.setState({login_password: event.target.value})} aria-describedby="basic-addon1"></input>
-                                {/* <a href="#" className="forgot-link">Forgot Password?</a> */}
-                                <button type="submit" className="btn btn-primary">Login</button>
-                            </form>
-                        </div>
+            </div>
+            <div className="card">
+                <div className="card-body">
+                    <div className="card-contents">
+                        <form onSubmit={this.loginUser}>
+                            <h5 className="card-title">Returning User?</h5>
+                            <p className="card-text">Log In to view analytics and change your settings!</p>
+                            <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.login_email} onChange = {(event) => this.setState({login_email: event.target.value})} aria-describedby="basic-addon1"></input>
+                            <input type="password" className="form-control register-input" placeholder="Password" aria-label="Password" value={this.state.login_password} onChange = {(event) => this.setState({login_password: event.target.value})} aria-describedby="basic-addon1"></input>
+                            {/* <a href="#" className="forgot-link">Forgot Password?</a> */}
+                            <button type="submit" className="btn btn-primary">Login</button>
+                        </form>
                     </div>
                 </div>
             </div>
