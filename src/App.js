@@ -27,6 +27,7 @@ class App extends Component {
     // always check if logged in
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
+        console.log(user)
         console.log("logged in - app.js");
         this.setState({ user: user });
         this.setState({ disabled: false });
@@ -59,7 +60,6 @@ class App extends Component {
   * Return: None.
   */
   logOut() {
-    localStorage.clear();
 
     // sign out the user
     auth.signOut().then(function() {
@@ -67,6 +67,7 @@ class App extends Component {
 
       // redirect to the home tab
       window.location.replace("https://daily-random-challenge.herokuapp.com/?#/");
+      localStorage.clear();
     }).catch(function(error) {
       console.log(error)
     });
@@ -99,7 +100,7 @@ class App extends Component {
               { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
           </ul>
           <div className="content">
-              <Route exact path="/" component={Home}/>
+              <Route exact path="/" component={() => <Home user={this.state.user}/>}/>
               <Route path="/analytics" component={Analytics}/>
               <Route path="/register" component={Registration}/>
           </div>

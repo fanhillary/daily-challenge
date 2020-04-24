@@ -188,7 +188,7 @@ class Registration extends Component {
                 <div className="card">
                     <div className="card-body">
                         <h5 className="card-title">New to Daily Challenge?</h5>
-                        <p className="card-text">Register to use keep track of the challenges you've completed!</p>
+                        <p className="card-text">Register to keep track of the challenges you've completed!</p>
                         <form onSubmit={this.createNewUser}>
                             <input type="text" className="form-control register-input" placeholder="Display Name" aria-label="Display Name" value={this.state.name} onChange = {(event) => this.setState({name: event.target.value})} aria-describedby="basic-addon1"></input>
                             <input type="email" className="form-control register-input" placeholder="Email Address" aria-label="Email Address" value={this.state.email} onChange = {(event) => this.setState({email: event.target.value})} aria-describedby="basic-addon1"></input>

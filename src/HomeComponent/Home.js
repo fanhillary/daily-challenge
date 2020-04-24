@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import './Home.css';
-import { auth, db } from '../firebase.js';
+import { db } from '../firebase.js';
 import schedule from 'node-schedule';
 
 // var categories = ["Action", "Food", "Finance", "Exercise", "Communication"];
@@ -27,7 +27,6 @@ class Home extends Component {
       currentChallenge: "",
       category: "",
       completedChallenges: [],
-      user: null,
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -43,18 +42,6 @@ class Home extends Component {
   componentDidMount() {
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
-
-    // check for user logged in or not
-    this.fireBaseListener = auth.onAuthStateChanged((user) => {
-      if (user) {
-        console.log("logged in");
-        this.setState({ user: user });
-        console.log(this.state.user);
-      } else {
-        this.setState({ user: null });
-        console.log("not logged in");
-      }
-    });
 
     // if user has already completed a challenge today, display appropriate message
     if (localStorage.getItem("flag_daily_complete")) {
@@ -73,10 +60,6 @@ class Home extends Component {
       document.getElementById("analytics-tab").style.setProperty('font-weight', 'normal');
     }
 
-  }
-
-  componentWillUnmount() {
-    this.fireBaseListener();
   }
 
 /*
@@ -197,8 +180,8 @@ getRandomArbitrary(min, max) {
     document.body.style.transition = "all 1s ease-out";
 
     if(this.state.currentChallenge !== "" && this.state.currentChallenge !== null) {
-      if(this.state.user) {
-        var docRef = db.collection("users").doc(this.state.user.email);
+      if(this.props.user) {
+        var docRef = db.collection("users").doc(this.props.user.email);
 
         docRef.get().then((doc) => {
           if (doc.exists) { // if user exists
@@ -215,7 +198,7 @@ getRandomArbitrary(min, max) {
             if(user_data.completed_challenges == null) {
               console.log("empty data");
               docRef.set({
-                name: this.state.user.displayName,
+                name: this.props.user.displayName,
                 completed_challenges: [new_data],
                 duplicates: false
               });
@@ -223,7 +206,7 @@ getRandomArbitrary(min, max) {
               var updated_challenges = user_data.completed_challenges;
               updated_challenges.push(new_data);
               docRef.set({
-                name: this.state.user.displayName,
+                name: this.props.user.displayName,
                 completed_challenges: updated_challenges,
                 duplicates: false
               });
@@ -244,7 +227,7 @@ getRandomArbitrary(min, max) {
     return (
       <div>
         <div>
-            { this.state.user? <h2> Hi {this.state.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
+            { this.props.user? <h2> Hi {this.props.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
             { localStorage.getItem("flag_daily_complete") ? <h1> Congratulations! </h1> :
             <div> 
               <h3> Your Challenge For Today</h3> 
@@ -261,7 +244,7 @@ getRandomArbitrary(min, max) {
           <div>
             <h2> You've completed your daily task. </h2>
             <br></br>
-            { this.state.user?
+            { this.props.user?
               <h3> You will receive a new challenge after midnight! Meanwhile, check out the analytics tab. </h3>
               :
               <h3> You will receive a new challenge after midnight! Register to view your analytics! </h3>
