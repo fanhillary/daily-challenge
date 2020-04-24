@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "main": "server.js",
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.56",
     "body-parser": "^1.18.3",
