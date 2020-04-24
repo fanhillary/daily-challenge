@@ -92,7 +92,7 @@ class Registration extends Component {
       return false
     }
     if (ifRegistration) {
-      if (data.name == "") {
+      if (data.name === "") {
         this.setState({warning: "Please enter a display name."});
         return false
       }
@@ -138,7 +138,7 @@ class Registration extends Component {
             completed_challenges: [],
             duplicates: false
         })
-
+        localStorage.clear();
     }
     ).catch((error) => {
         this.setState({warning: "The email address is already in use by another account!"});
@@ -164,7 +164,7 @@ class Registration extends Component {
     firebase.auth().signInWithEmailAndPassword(data.email, data.password)
     .then((result) => {
         console.log("checking login credentials...");
-        
+        localStorage.clear();
     }).catch((error) => {
         this.setState({warning: "Either your email or password login is incorrect."});
         console.log(error.code);

@@ -49,12 +49,14 @@ class Home extends Component {
     document.body.style.setProperty('background-color', '#FFCC00');
     document.getElementById("home-tab").style.setProperty('color', 'white');
     document.getElementById("home-tab").style.setProperty('font-weight', 'bold');
-
+  
     // if user has already completed a challenge today, display appropriate message
-    if (localStorage.getItem("flag_daily_complete")) {
+    if (localStorage.getItem("flag_daily_complete") === "true") {
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
     } else { // if haven't completed today, get challenge
+      document.body.style.setProperty('background-color', '#FFCC00');
+      document.body.style.transition = "all 1s ease-out";
 
       // if haven't generated a challenge, generate one. Otherwise, use the previously generated one.
       if (!localStorage.getItem("currChallenge")) {
@@ -84,6 +86,14 @@ componentWillReceiveProps(nextProps) {
   }
 }
 
+componentDidUpdate(nextProps) {
+  console.log(this.props)
+  console.log(nextProps)
+  if (this.props !== nextProps) {
+    console.log("update user");
+    this.setState({user: nextProps.user});
+  }
+}
 /*
 * Function Name: getRandomArbitrary
 * Function Description: Return whole number between the two given parameters
@@ -249,7 +259,7 @@ getRandomArbitrary(min, max) {
       <div>
         <div>
             { this.state.user ? <h2> Hi {this.state.user.displayName}! </h2> : <h2> Hi Guest! </h2> }
-            { localStorage.getItem("flag_daily_complete") ? <h1> Congratulations! </h1> :
+            { localStorage.getItem("flag_daily_complete") === "true" ? <h1> Congratulations! </h1> :
             <div className="prompt"> 
               <h3> Today's Challenge:</h3> 
               <h1> {this.state.currentChallenge} </h1>
@@ -261,7 +271,7 @@ getRandomArbitrary(min, max) {
         </div>
 
         
-        { localStorage.getItem("flag_daily_complete") ?
+        {  localStorage.getItem("flag_daily_complete") === "true" ?
           <div className="form-container">
             <h2> You've completed your daily task. </h2>
             <br></br>

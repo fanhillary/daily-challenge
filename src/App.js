@@ -67,6 +67,8 @@ class App extends Component {
       this.setState({user: null});
       this.setState({disabled: false});
       this.props.history.push('/');
+      document.body.style.setProperty('background-color', '#FFCC00');
+      document.body.style.transition = "all 1s ease-out";
     }).catch(function(error) {
       console.log(error)
     });

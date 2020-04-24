@@ -118,7 +118,7 @@ class Analytics extends Component {
             <div className="analytics-card">
               <div className="card-body">
                   <h5 className="card-title">Categories Completed</h5>
-                  {this.state.totalCompleted == 0 ? 
+                  {this.state.totalCompleted === 0 ? 
                     "None Completed"
                     :
                     <div id="chart_div"></div>
@@ -130,7 +130,7 @@ class Analytics extends Component {
             <div className="analytics-card">
                 <div className="card-body">
                     <h5 className="card-title">History of Completed</h5>
-                    {this.state.totalCompleted == 0 ? 
+                    {this.state.totalCompleted === 0 ? 
                       "None Completed"
                       :
                       <div>
