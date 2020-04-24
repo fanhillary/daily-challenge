@@ -30,13 +30,11 @@ class App extends Component {
     this.fireBaseListener = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log(user);
-        localStorage.clear();
         localStorage.setItem("logged_on", true);
         localStorage.setItem("user", JSON.stringify(user));
         this.setState({ user: user });
         this.setState({ disabled: false });
       } else {
-        localStorage.clear();
         this.setState({ user: null });
         this.setState({ disabled: true });
       }

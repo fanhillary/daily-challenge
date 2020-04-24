@@ -28,7 +28,6 @@ class Home extends Component {
       category: "",
       completed: false,
       user: null,
-      displayName: null,
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -43,13 +42,9 @@ class Home extends Component {
 */
   componentDidMount() {
     console.log(localStorage);
+    console.log(this.props);
     console.log("mounting");
-    if (localStorage.getItem("user")) {
-      let userObj = JSON.parse(localStorage.getItem("user"));
-      this.setState({user: userObj});
-      this.setState({displayName: userObj.displayName});
-    }
-    console.log(this.state.displayName)
+    
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
     document.getElementById("home-tab").style.setProperty('color', 'white');
@@ -59,10 +54,21 @@ class Home extends Component {
     if (localStorage.getItem("flag_daily_complete")) {
       document.body.style.setProperty('background-color', 'MediumSeaGreen');
       document.body.style.transition = "all 1s ease-out";
-    } else {
-      this.generateChallenge();
+    } else { // if haven't completed today, get challenge
+
+      // if haven't generated a challenge, generate one. Otherwise, use the previously generated one.
+      if (!localStorage.getItem("currChallenge")) {
+        this.generateChallenge();
+      } else { // to prevent regenerate on refresh. 
+        let challenge = JSON.parse(localStorage.getItem("currChallenge"))
+        this.setState({currentChallenge: challenge.currentChallenge});
+        this.setState({category: challenge.category})
+      }
     }
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
+    if (this.props.user) {
+      this.setState({user: this.props.user});
+    }
   }
 
 /*
@@ -73,20 +79,8 @@ componentWillReceiveProps(nextProps) {
   console.log(nextProps)
   if (nextProps.user) {
     this.setState({user: nextProps.user});
-    this.setState({displayName: nextProps.user.displayName});
   } else {
       this.setState({user: null});
-      this.setState({displayName: null});
-  }
-}
-
-
-componentDidUpdate(nextProps) {
-  console.log(this.props);
-  console.log(nextProps);
-  if (this.props.user !== nextProps.user) {
-    console.log("updating prop");
-    this.setState({user: nextProps.user});
   }
 }
 
@@ -114,6 +108,8 @@ getRandomArbitrary(min, max) {
     var randomVerb = "";
     var randomConjunction = "";
     var randomEnd = "";
+    let challenge = "";
+    let category = "";
     // choose a random action array to select from
     var selectedCategory = this.getRandomArbitrary(0,4);
      // Action Category
@@ -132,34 +128,33 @@ getRandomArbitrary(min, max) {
           randomEnd = targets[Math.floor(Math.random()*targets.length)];
         }
         // concatenate the entire sentence
-        this.setState({currentChallenge: randomVerb + " " + randomConjunction + " " + randomEnd + "."});
+        challenge = randomVerb + " " + randomConjunction + " " + randomEnd + ".";
       } else {
-        this.setState({currentChallenge: listActionPre[Math.floor(Math.random()*listActionPre.length)]});
+        challenge = listActionPre[Math.floor(Math.random()*listActionPre.length)];
       }
-      this.setState({category: "Action"});
-
+      category = "Action";
 
       // Food Category
     } else if (selectedCategory === 1) { 
       randomVerb= listFood[Math.floor(Math.random()*listFood.length)];
       randomEnd = foodTarget[Math.floor(Math.random()*foodTarget.length)];
-      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
-      this.setState({category: "Food"});
+      challenge = randomVerb + " " + randomEnd + ".";
+      category = "Food";
 
 
       // Finance Category
     } else if (selectedCategory === 2) {
       randomVerb= listFinance[Math.floor(Math.random()*listFinance.length)];
       randomEnd = financeTarget[Math.floor(Math.random()*financeTarget.length)];
-      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
-      this.setState({category: "Finance"});
+      challenge = randomVerb + " " + randomEnd + ".";
+      category = "Finance";
 
       // Communication Category
     } else if (selectedCategory === 3) {
       randomVerb= listCommunication[Math.floor(Math.random()*listCommunication.length)];
       randomEnd = targets[Math.floor(Math.random()*targets.length)];
-      this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
-      this.setState({category: "Communication"});
+      challenge = randomVerb + " " + randomEnd + ".";
+      category = "Communication";
 
       // Exercise Category
     } else {
@@ -174,25 +169,22 @@ getRandomArbitrary(min, max) {
         } else if (randomConjunction === "with") {
           randomEnd = targets[Math.floor(Math.random()*targets.length)];
         }
-        this.setState({currentChallenge: randomVerb + " " + randomConjunction + " " + randomEnd + "."});
+        challenge = randomVerb + " " + randomConjunction + " " + randomEnd + ".";
 
       } else {
         randomVerb= listExerciseNoConj[Math.floor(Math.random()*listExerciseNoConj.length)];
         randomEnd = exerciseTarget[Math.floor(Math.random()*exerciseTarget.length)];
-        this.setState({currentChallenge: randomVerb + " " + randomEnd + "."});
+        challenge = randomVerb + " " + randomEnd + ".";
       }
-      this.setState({category: "Exercise"});
+      category = "Exercise";
     }
-    // console.log(this.state.currentChallenge)
-    // if (this.state.currentChallenge !== "") {
-    //   const challengeDetails = {
-    //     "currentChallenge": this.state.currentChallenge,
-    //     "category": this.state.category,
-    //   }
-    //   console.log("challengedetails")
-    //   console.log(challengeDetails)
-    //   localStorage.setItem("prompt", JSON.stringify(challengeDetails));
-    // }
+      const challengeDetails = {
+        "currentChallenge": challenge,
+        "category": category,
+      }    
+      localStorage.setItem("currChallenge", JSON.stringify(challengeDetails));
+      this.setState({currentChallenge: challenge});
+      this.setState({category: category});
   }
   
 /*
