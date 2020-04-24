@@ -28,6 +28,7 @@ class Home extends Component {
       category: "",
       completed: false,
       user: null,
+      displayName: null,
     };
   
     this.generateChallenge = this.generateChallenge.bind(this);
@@ -42,8 +43,11 @@ class Home extends Component {
 */
   componentDidMount() {
     console.log(localStorage);
+    console.log("mounting");
     if (localStorage.getItem("user")) {
-      this.setState({user: JSON.parse(localStorage.getItem("user"))});
+      let userObj = JSON.parse(localStorage.getItem("user"));
+      this.setState({user: userObj});
+      this.setState({displayName: userObj.displayName});
     }
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
@@ -60,9 +64,20 @@ class Home extends Component {
     schedule.scheduleJob('0 0 * * *', () => { localStorage.clear()}) // run everyday at midnight
   }
 
+/*
+* Called whenever App.js is rerendered to reset user state.
+* Params: nextProps - prop object holding user prop passed into Home
+*/
 componentWillReceiveProps(nextProps) {
   console.log(nextProps)
-  this.setState({ user: nextProps.user});  
+  if (nextProps.user) {
+    this.setState({user: nextProps.user});
+    this.setState({displayName: nextProps.user.displayName});
+  } else {
+      this.setState({user: null});
+
+      this.setState({displayName: null});
+  }
 }
 /*
 * Function Name: getRandomArbitrary

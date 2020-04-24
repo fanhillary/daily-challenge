@@ -67,6 +67,7 @@ class App extends Component {
     auth.signOut().then(() => {
       localStorage.clear();
       this.setState({user: null});
+      this.setState({disabled: false});
       this.props.history.push('/');
     }).catch(function(error) {
       console.log(error)

@@ -137,11 +137,10 @@ class Registration extends Component {
         })
 
     }
-    ).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorCode);
-        console.log(errorMessage);
+    ).catch((error) => {
+        this.setState({warning: "The email address is already in use by another account!"});
+        console.log(error.code);
+        console.log(error.message);
       });
   }
  
