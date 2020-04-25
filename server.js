@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 
 app.get('/', function(req,res){
     console.log('serving...');
+    res.send();
     // res.redirect('/');
 });
 // serve src/build upon accessing localhost:3000
@@ -24,5 +25,6 @@ app.get('/', function(req,res){
 //     response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 //     next();
 //   });
+
 
 app.listen(process.env.PORT, () => console.log('Listening on port ' + process.env.PORT));
