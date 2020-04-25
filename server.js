@@ -6,9 +6,9 @@ let path = require('path');
 let app = express();
 app.use(bodyParser.json());
 
-app.get('*', function(req,res){
+app.get('/', function(req,res){
     console.log('serving...');
-    res.redirect('/');
+    // res.redirect('/');
 });
 // serve src/build upon accessing localhost:3000
 // app.use(express.static(path.join(__dirname, 'public')));
