@@ -1,15 +1,14 @@
 let express = require('express');
 let bodyParser = require('body-parser');
-let morgan = require('morgan');
-let path = require('path');
+const cors = require('cors');
 
 let app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', function(req,res){
     console.log('serving...');
-    res.send();
-    // res.redirect('/');
+    res.status(200).send('listening...');
 });
 // serve src/build upon accessing localhost:3000
 // app.use(express.static(path.join(__dirname, 'public')));
