@@ -1,0 +1,8 @@
+{
+  "short_name": "Daily Random Challenge",
+  "name": "Daily Random Challenge",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
