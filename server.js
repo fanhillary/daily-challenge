@@ -1,9 +1,7 @@
 let express = require('express');
 let bodyParser = require('body-parser');
-const cors = require('cors');
 
 let app = express();
-app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', function(req,res){
