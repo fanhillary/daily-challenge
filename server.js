@@ -4,9 +4,11 @@ let morgan = require('morgan');
 let path = require('path');
 
 let app = express();
+app.use(bodyParser.json());
 
-app.get('/', function(req,res){
-    res.send("serving...");
+app.get('*', function(req,res){
+    console.log('serving...');
+    res.redirect('/');
 });
 // serve src/build upon accessing localhost:3000
 // app.use(express.static(path.join(__dirname, 'public')));
