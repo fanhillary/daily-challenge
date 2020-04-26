@@ -41,10 +41,6 @@ class Home extends Component {
 * Return: None.
 */
   componentDidMount() {
-    console.log(localStorage);
-    console.log(this.props);
-    console.log("mounting");
-    
     // yellow default background
     document.body.style.setProperty('background-color', '#FFCC00');
     document.getElementById("home-tab").style.setProperty('color', 'white');
@@ -78,7 +74,6 @@ class Home extends Component {
 * Params: nextProps - prop object holding user prop passed into Home
 */
 componentWillReceiveProps(nextProps) {
-  console.log(nextProps)
   if (nextProps.user) {
     this.setState({user: nextProps.user});
   } else {
@@ -86,9 +81,12 @@ componentWillReceiveProps(nextProps) {
   }
 }
 
+/*
+* Called whenever Home.js is rerendered in App.js with a new user prop passed in. 
+* Then it can rerender when it catches the update in user prop.
+* Params: nextProps - prop object holding user prop passed into Home
+*/
 componentDidUpdate(nextProps) {
-  console.log(this.props)
-  console.log(nextProps)
   if (this.props !== nextProps) {
     console.log("update user");
     this.setState({user: nextProps.user});

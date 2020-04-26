@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Route, NavLink, Switch, Link, withRouter} from "react-router-dom";
+import { Route, Switch, Link, withRouter, BrowserRouter as Router} from "react-router-dom";
 import './App.css';
 import Home from "./HomeComponent/Home";
 import Analytics from "./AnalyticsComponent/Analytics";
 import Registration from "./RegistrationComponent/Registration";
 import { auth } from './firebase.js';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -114,20 +115,22 @@ class App extends Component {
           <ul className="header">
               <li><Link id="home-tab" to="/" onClick={(e) => this.homeTabClicked(e)}>Home</Link></li>
               { this.state.user? 
-                <li><Link id="analytics-tab" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} to="/analytics">Analytics</Link></li>
+                <li><Link id="analytics-tab" to="/analytics" className ="analytics-tab" onClick={(e) => this.analyticsTabClicked(e)} >Analytics</Link></li>
               : 
               null 
               }
-              { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><NavLink to ="/register">Register or Login</NavLink></button> }
+              { this.state.user? <button type="button" className="btn btn-dark" onClick={this.logOut}>Log Out</button> : <button type="button" className="btn btn-dark"><Link to ="/register">Register or Login</Link></button> }
           </ul>
           <Switch>
+            <Route exact path="/analytics">
+              <Analytics user={this.state.user}/>
+            </Route>
+            <Route exact path="/register">
+              <Registration/>
+            </Route>
             <Route exact path="/">
               <Home user={this.state.user}/>
             </Route>
-            <Route path="/analytics">
-              <Analytics user={this.state.user}/>
-            </Route>
-            <Route path="/register" component={Registration}/>
           </Switch>
         </div>
     );
