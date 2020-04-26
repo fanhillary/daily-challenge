@@ -1,7 +1,7 @@
 # Daily Challenge Web App
 
 Check out the web application at: 
-https://daily-random-challenge.herokuapp.com/#/
+https://fanhillary.github.io/daily-challenge/
 
 ## Description
 A simple web application that gives you a fun randomly generated challenge each day to mark for completion. 
